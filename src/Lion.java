@@ -9,7 +9,7 @@ class Lion {
     private float detectRange;
     private ArrayList<Zebra> inRange;
 
-    public class Lion() {
+    public class Lion(float speed, int energy, float detectRange) {
 
     }
 
