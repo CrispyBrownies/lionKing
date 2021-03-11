@@ -8,10 +8,13 @@ class Equations {
         return dist;
     }
 
-    private float EnergyCost(float velocity) {
+    private float EnergyCost(Vector<float> velocity) {
         float speed = EuclDist(velocity.get(1),velocity.get(2));
         float energyCost = speed; //Equation to calculate energy cost based on speed
         return energyCost;
     }
 
 }
+
+
+(dist)

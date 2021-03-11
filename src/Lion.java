@@ -2,11 +2,8 @@
 //Created: 3/11/2021
 //Main class for Lion (predator)
 
-class Lion {
+class Lion extends Animal {
 
-    private float speed;
-    private int energy;
-    private float detectRange;
     private ArrayList<Zebra> inRange;
 
     public class Lion() {

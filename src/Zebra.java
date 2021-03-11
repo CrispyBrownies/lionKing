@@ -1,0 +1,3 @@
+class Zebra extends Animal {
+
+}
