@@ -1,14 +1,15 @@
-import java.*;
+
+import java.util.*;
 
 class Equations {
 
-    private float EuclDist(float a, float b) {
-        float dist = Math.sqrt(a*a+b*b);
+    private float EuclDist(float ax, float ay, float bx, float by) {
+        float dist = (float)Math.sqrt((ax-bx)*(ax-bx)+(ay-by)*(ay-by));
         return dist;
     }
 
-    private float EnergyCost(Vector<float> velocity) {
-        float speed = EuclDist(velocity.get(1),velocity.get(2));
+    private float EnergyCost(Vector<Float> velocity) {
+        float speed = (float)Math.sqrt(velocity.get(1)*velocity.get(1)+velocity.get(2)*velocity.get(2));
         float energyCost = speed; //Equation to calculate energy cost based on speed
         return energyCost;
     }

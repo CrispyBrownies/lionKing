@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.lang.Math;
 
 class Simulation {
     
@@ -13,11 +14,13 @@ class Simulation {
     private static float maxDetect = 5;
     private static float maxBreedEnergy = 1000;
 
+    private ArrayList<Plant> PlantList = new ArrayList<Plant>(initPlant);
+    private ArrayList<Zebra> ZebraList = new ArrayList<Zebra>(initZebra);
+    private ArrayList<Lion> LionList = new ArrayList<Lion>(initLion);
+
     public static void main(String[] args) {
 
-        ArrayList<Plant> PlantList = new ArrayList<Plant>(initPlant);
-        ArrayList<Zebra> ZebraList = new ArrayList<Zebra>(initZebra);
-        ArrayList<Lion> LionList = new ArrayList<Lion>(initLion);
+
 
         System.out.println("run");
 
@@ -25,12 +28,12 @@ class Simulation {
 
     private void CreateSim() {
         for (int i = initPlant; i > 0; i--) {
-            Plant newPlant = new Plant(Math.rand()*mapSize, Math.rand()*mapSize);
+            Plant newPlant = new Plant((float)Math.random()*mapSize, (float)Math.random()*mapSize);
             PlantList.add(newPlant);
         }
         for (int i = initZebra; i > 0; i--) {
-            Zebra newZebra = new Zebra(Math.rand()*mapSize, Math.rand()*mapSize,
-                    Math.rand()*maxSpeed, Math.rand()*maxEnergy, Math.rand()*maxDetect, Math.rand()*maxBreedEnergy);
+            Zebra newZebra = new Zebra((float)Math.random()*mapSize, (float)Math.random()*mapSize,
+                    (float)Math.random()*maxSpeed, (int)Math.random()*maxEnergy, (float)Math.random()*maxDetect, (float)Math.random()*maxBreedEnergy);
             ZebraList.add(newZebra);
         }
     }

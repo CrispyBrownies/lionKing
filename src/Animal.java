@@ -12,7 +12,7 @@ class Animal {
     private float x;
     private float y;
 
-    public class Animal() {
+    public Animal() {
 
     }
 
