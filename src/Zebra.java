@@ -2,7 +2,7 @@
 //Created: 3/11/2021
 //Main class for Zebra (prey)
 
-import ArrayList;
+import java.util.ArrayList;
 
 class Zebra extends Animal {
 
@@ -14,7 +14,7 @@ class Zebra extends Animal {
         setEnergy(energy);
         setSpeed(speed);
         setDetectRange(detectRange);
-        self.breedEnergy = breedEnergy;
+        this.breedEnergy = breedEnergy;
         setX(x);
         setY(y);
     }

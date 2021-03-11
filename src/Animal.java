@@ -65,7 +65,7 @@ class Animal {
     }
 
     public String toString() {
-        return getName() + ": Position = (" + getX() + ", " + getY() + "), " +
-                "" "Speed = " + getSpeed() + ", Energy = " + getEnergy() + ", Range = " + getDetectRange();
+        return getName() + ": Position = (" + getX() + ", " + getY() + ")," +
+                " Speed = " + getSpeed() + ", Energy = " + getEnergy() + ", Range = " + getDetectRange();
     }
 }
