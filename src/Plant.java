@@ -9,6 +9,8 @@ class Plant {
     private float y;
     private final float FOODVAL = 10;
 
+    public Plant() { }
+
     public Plant(float x, float y) {
         this.x = x;
         this.y = y;

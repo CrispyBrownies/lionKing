@@ -8,6 +8,20 @@ class Lion extends Animal {
 
     private ArrayList<Zebra> inRange;
 
+    public Lion() { }
+
+    public Lion(float x, float y) {
+        setName("Lion");
+        setEnergy(10000);
+        setSpeed(10);
+        setDetectRange(7);
+    }
+
+    private void detectPrey(ArrayList<Zebra> zebraList) {
+//        for (x:zebraList.size()); { //for each thing in list
+//
+//        }
+    }
 
     public void setX(float x) {
         super.setX(x);
@@ -39,7 +53,6 @@ class Lion extends Animal {
         this.inRange = inRange;
     }
 
-
     public float getSpeed() {
         return super.getSpeed();
     }
@@ -50,19 +63,6 @@ class Lion extends Animal {
 
     public ArrayList<Zebra> getInRange() {
         return inRange;
-    }
-
-    public Lion(float x, float y) {
-        setName("Lion");
-        setEnergy(10000);
-        setSpeed(10);
-        setDetectRange(7);
-    }
-
-    private void detectPrey(ArrayList<Zebra> zebraList) {
-//        for (x:zebraList.size()); { //for each thing in list
-//
-//        }
     }
 
 }
