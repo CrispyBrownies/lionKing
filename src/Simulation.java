@@ -1,8 +1,7 @@
-
-import java.lang.Math;
+import java.util.ArrayList;
 
 class Simulation {
-
+    
     private static int initPlant = 10;
     private static int initZebra = 5;
     private static int initLion = 1;
@@ -20,17 +19,18 @@ class Simulation {
         ArrayList<Zebra> ZebraList = new ArrayList<Zebra>(initZebra);
         ArrayList<Lion> LionList = new ArrayList<Lion>(initLion);
 
-
+        System.out.println("run");
 
     }
 
     private void CreateSim() {
-        for (i = initPlant; i > 0; i--) {
+        for (int i = initPlant; i > 0; i--) {
             Plant newPlant = new Plant(Math.rand()*mapSize, Math.rand()*mapSize);
             PlantList.add(newPlant);
         }
-        for (i = initZebra; i > 0; i--) {
-            Zebra newZebra = new Zebra(Math.rand()*mapSize, Math.rand()*mapSize, Math.rand()*maxSpeed, Math.rand()*maxEnergy, Math.rand()*maxDetect, Math.rand()*maxBreedEnergy);
+        for (int i = initZebra; i > 0; i--) {
+            Zebra newZebra = new Zebra(Math.rand()*mapSize, Math.rand()*mapSize,
+                    Math.rand()*maxSpeed, Math.rand()*maxEnergy, Math.rand()*maxDetect, Math.rand()*maxBreedEnergy);
             ZebraList.add(newZebra);
         }
     }

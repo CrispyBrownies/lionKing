@@ -8,7 +8,7 @@ class Zebra extends Animal {
     private static int breedEnergy;
 
     public class Zebra(float x, float y, float speed, int energy, float detectRange, int breedEnergy) {
-
+        setName("Zebra");
     }
 
     private void detectPrey(ArrayList<Zebra> zebraList) {
@@ -16,5 +16,6 @@ class Zebra extends Animal {
 
         }
     }
+
 
 }

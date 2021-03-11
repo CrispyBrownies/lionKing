@@ -1,5 +1,4 @@
-
-import java.lang.Math;
+import java.*;
 
 class Equations {
 
@@ -15,6 +14,3 @@ class Equations {
     }
 
 }
-
-
-(dist)
