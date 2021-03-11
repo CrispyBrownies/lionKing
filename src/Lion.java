@@ -6,8 +6,10 @@ class Lion extends Animal {
 
     private ArrayList<Zebra> inRange;
 
-    public class Lion(float speed, int energy, float detectRange) {
-
+    public class Lion(float x, float y) {
+        setEnergy(10000);
+        setSpeed(10);
+        setDetectRange();
     }
 
     private void detectPrey(ArrayList<Zebra> zebraList) {

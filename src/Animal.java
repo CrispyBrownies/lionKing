@@ -1,7 +1,13 @@
+
+//Created: 3/11/2021
+//Main Class for animal properties and methods
+
 class Animal {
+
     private float speed;
     private int energy;
     private float detectRange;
+
     //position coordinates
     private float x;
     private float y;
