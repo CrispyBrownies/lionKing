@@ -33,6 +33,10 @@ class Simulation {
                     (float)Math.random()*MAXSPEED, (int)Math.round(Math.random()*MAXENERGY), (float)Math.random()*maxDetect, (int)Math.round(Math.random()*maxBreedEnergy));
             ZebraList.add(newZebra);
         }
+        for (int i = LIONCOUNT; i > 0; i--) {
+            Lion newLion = new Lion((float)Math.random()*MAPSIZE, (float)Math.random()*MAPSIZE);
+            LionList.add(newLion);
+        }
     }
 
 }
