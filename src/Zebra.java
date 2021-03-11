@@ -22,7 +22,7 @@ class Zebra extends Animal {
     private void detectPrey(ArrayList<Plant> plantList) {
         //Looking for food in range
         for (plant:plantList) { //for each plant in plantlist
-            if (EuclDist(plant.x,plant.y,self.x,self.y) < self.detectRange) {
+            if (Equations.EuclDist(plant.x,plant.y,self.x,self.y) < self.detectRange) {
                 inRange.add(plant);
             }
         }

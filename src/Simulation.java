@@ -33,7 +33,7 @@ class Simulation {
         }
         for (int i = initZebra; i > 0; i--) {
             Zebra newZebra = new Zebra((float)Math.random()*mapSize, (float)Math.random()*mapSize,
-                    (float)Math.random()*maxSpeed, (int)Math.random()*maxEnergy, (float)Math.random()*maxDetect, (float)Math.random()*maxBreedEnergy);
+                    (float)Math.random()*maxSpeed, (int)Math.round(Math.random()*maxEnergy), (float)Math.random()*maxDetect, (int)Math.round(Math.random()*maxBreedEnergy));
             ZebraList.add(newZebra);
         }
     }
