@@ -7,6 +7,7 @@ import java.util.ArrayList;
 class Zebra extends Animal {
 
     private ArrayList<Plant> inRange;
+    private ArrayList<Zebra> mateList;
     private static int breedEnergy;
     private boolean state; //State of the zebra, 0 = food, 1 = mate
 
@@ -29,7 +30,12 @@ class Zebra extends Animal {
     }
 
     private void detectMate(ArrayList<Zebra> zebraList) {
-
+        for (Zebra zebra:zebraList) { //for each zebra in zebralist
+            if ((Equations.EuclDist(zebra.getX(),zebra.getY(),getX(),getY()) < getDetectRange()) && (zebra.state)) {
+                mateList.add(zebra);
+            }
+        }
     }
+
 
 }
