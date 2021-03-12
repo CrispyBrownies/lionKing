@@ -3,10 +3,13 @@
 //Main class for Lion (predator)
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
 
 class Lion extends Animal {
 
-    private ArrayList<Zebra> inRange;
+    private Zebra targetZebra;
 
     public Lion() { }
 
@@ -17,16 +20,24 @@ class Lion extends Animal {
         setDetectRange(7);
     }
 
-    private void detectPrey(ArrayList<Zebra> zebraList) {
-//        for (x:zebraList.size()); { //for each thing in list
-//
-//        }
+    //Checks for nearby zebras and selects closest one as target
+    private void DetectZebra(ArrayList<Zebra> zebraList) {
+        HashMap<Float, Zebra> zebraMap = new HashMap<Float, Zebra>();
+        //Looking for food in range
+        for (Zebra zebra:zebraList) { //for each zebra in zebraList
+            float distBetween = Equations.EuclDist(zebra.getX(),zebra.getY(),getX(),getY());
+            if (distBetween < getDetectRange()) {
+                zebraMap.put(distBetween, zebra);
+            }
+        }
+        Set<Float> distances = zebraMap.keySet();
+        float minDist = Collections.min(distances);
+        this.targetZebra = zebraMap.get(minDist);
     }
 
     public void setX(float x) {
         super.setX(x);
     }
-
 
     public void setEnergy(int energy) {
         super.setEnergy(energy);
@@ -35,7 +46,6 @@ class Lion extends Animal {
     public void setName(String name) {
         super.setName(name);
     }
-
 
     public void setDetectRange(float detectRange) {
         super.setDetectRange(detectRange);
@@ -49,20 +59,12 @@ class Lion extends Animal {
         super.setY(y);
     }
 
-    public void setInRange(ArrayList<Zebra> inRange) {
-        this.inRange = inRange;
-    }
-
     public float getSpeed() {
         return super.getSpeed();
     }
 
     public String getName() {
         return super.getName();
-    }
-
-    public ArrayList<Zebra> getInRange() {
-        return inRange;
     }
 
 }
