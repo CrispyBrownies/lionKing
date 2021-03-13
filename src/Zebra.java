@@ -26,6 +26,7 @@ class Zebra extends Animal {
         setAttentionSpan(attentionSpan);
     }
 
+    //Searches for plants in detection range, sets target plant to nearest plant
     private void DetectPlant(ArrayList<Plant> plantList) {
         HashMap<Float, Plant> plantMap = new HashMap<Float, Plant>();
 
@@ -64,6 +65,7 @@ class Zebra extends Animal {
         }
     }
 
+    //Searches for nearby enemys within detection range, sets nearest lion to target lion
     private void DetectEnemy(ArrayList<Lion> lionList) {
         HashMap<Float, Lion> lionMap = new HashMap<Float, Lion>();
 
@@ -74,11 +76,17 @@ class Zebra extends Animal {
                 lionMap.put(distBetween, lion);
             }
         }
+        //Enters run phase if lions are found
         if (lionMap.size()>0) {
             Set<Float> distances = lionMap.keySet();
             float minDist = Collections.min(distances);
             this.targetLion = lionMap.get(minDist);
             this.state = 3;
+        }
+        //Enters wander phase if lions are out of detection range
+        else {
+            this.targetLion = null;
+            this.state = 0;
         }
     }
 
@@ -95,23 +103,26 @@ class Zebra extends Animal {
                 Wander();
             case 1: //searching for food
                 DetectPlant(plantList);
+                Move(this.targetPlant.getX(),this.targetPlant.getY(),0);
+                Eat(plantList);
             case 2: //searching for mate
                 DetectMate(zebraList);
+                Move(this.targetMate.getX(),this.targetMate.getY(),0);
                 Mate();
             case 3: //running from predator
-
+                Move(this.targetLion.getX(),this.targetLion.getY(),1);
         }
     }
 
     //Call every time step during food targeting phase
-    private void GoEat() {
-        Vector<Float> foodDir = new Vector<Float>();
-        foodDir.set(0,this.targetPlant.getX()-this.getX());
-        foodDir.set(1,this.targetPlant.getY()-this.getY());
-
-        this.setDirection(foodDir);
-        Move();
-    }
+//    private void GoEat() {
+//        Vector<Float> foodDir = new Vector<Float>();
+//        foodDir.set(0,this.targetPlant.getX()-this.getX());
+//        foodDir.set(1,this.targetPlant.getY()-this.getY());
+//
+//        this.setDirection(foodDir);
+//        Move();
+//    }
 
     //Handles the eating of plants
     private void Eat(ArrayList<Plant> plantList) {
@@ -119,9 +130,21 @@ class Zebra extends Animal {
         if (distBetween < 0.05) {
             plantList.remove(targetPlant); //removes this plant
             this.targetPlant = null; //clear targetPlant variable
+            this.PickNewDir();
         }
     }
 
+    //Runs in opposite direction of the target lion
+//    private void Run() {
+//        Vector<Float> enemyDir = new Vector<Float>();
+//        enemyDir.set(0,this.getX()-this.targetLion.getX());
+//        enemyDir.set(1,this.getY()-this.targetLion.getY());
+//
+//        this.setDirection(enemyDir);
+//        Move();
+//    }
+
+    //Checks for available mate in proximity and mates
     public void Mate() {
 
     }
@@ -135,7 +158,7 @@ class Zebra extends Animal {
         else {
             this.setWanderDirTimer(this.getWanderDirTimer()-1);
         }
-        Move();
+        Advance();
     }
 
 

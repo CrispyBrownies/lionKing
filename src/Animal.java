@@ -21,13 +21,29 @@ class Animal {
 
     }
 
+    //Sets animal's direction to new random direction
     public void PickNewDir() {
         double newAngle = Math.random()*2*Math.PI;
         this.direction.set(0,this.speed * (float)Math.cos(newAngle));
         this.direction.set(1,this.speed * (float)Math.sin(newAngle));
     }
 
-    public void Move() {
+    //Handles movement of animal, dir = 1: towards, else: away
+    public void Move(float x, float y, int dir) {
+        Vector<Float> moveDir = new Vector<Float>();
+        if (dir == 0) {
+            moveDir.set(0,x-this.x);
+            moveDir.set(1,y-this.y);
+        }
+        else {
+            moveDir.set(0,this.x-x);
+            moveDir.set(1,this.y-y);
+        }
+        this.direction = moveDir;
+        Advance();
+    }
+
+    public void Advance() {
         this.x += this.direction.get(0);
         this.y += this.direction.get(1);
     }
