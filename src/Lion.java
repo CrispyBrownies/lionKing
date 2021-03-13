@@ -2,6 +2,7 @@
 //Created: 3/11/2021
 //Main class for Lion (predator)
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +12,8 @@ class Lion extends Animal {
 
     private final String name = "Lion";
     private Zebra targetZebra;
+    private final int WANDERDIRTIMER = 1000;
+    private final int MAXATTENTIONSPAN = 5000;
 
     public Lion() { }
 
@@ -43,6 +46,29 @@ class Lion extends Animal {
         this.targetZebra = zebraMap.get(minDist);
     }
 
+    //Call this method every time step
+    public void Update(ArrayList<Zebra> zebraList) {
+        DetectZebra(zebraList);
+        if (this.targetZebra != null) {
+            if (this.getAttentionSpan() == 0) {
+                this.targetZebra = null;
+                this.setAttentionSpan(MAXATTENTIONSPAN);
+            }
+            else {
+                this.setAttentionSpan(this.getAttentionSpan()-1);
+                Move(targetZebra.getX(), targetZebra.getY(), 0);
+                EatZebra(zebraList);
+            }
+        }
+    }
+
+    private void EatZebra(ArrayList<Zebra> zebraList) {
+        if (Equations.EuclDist(targetZebra.getX(),targetZebra.getY(),getX(),getY()) < 0.05) {
+            zebraList.remove(this.targetZebra);
+            this.setEnergy(this.getEnergy()+100);
+            this.targetZebra = null;
+        }
+    }
 
     public void setEnergy(int energy) {
         super.setEnergy(energy);

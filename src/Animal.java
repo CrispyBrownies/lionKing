@@ -61,6 +61,7 @@ class Animal {
     }
 
     public void Advance() {
+        this.energy -= Equations.EnergyCost(this.direction);
         this.x += this.direction.get(0);
         this.y += this.direction.get(1);
     }

@@ -7,7 +7,7 @@ class Plant {
     //Plant properties
     private float x;
     private float y;
-    private final float FOODVAL = 10;
+    private final int FOODVAL = 10;
 
     public Plant() { }
 
@@ -30,5 +30,9 @@ class Plant {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public int getFOODVAL() {
+        return FOODVAL;
     }
 }

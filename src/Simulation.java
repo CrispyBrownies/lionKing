@@ -15,6 +15,7 @@ class Simulation {
     private final int MAXBREEDENERGY = 1000;
     private final int MAXATTENTION = 3000;
     private final int MINATTENTION = 100;
+    private final int MAXWANDERDIRTIME = 1000;
 
     private ArrayList<Plant> PlantList = new ArrayList<Plant>(PLANTCOUNT);
     private ArrayList<Zebra> ZebraList = new ArrayList<Zebra>(ZEBRACOUNT);
@@ -85,6 +86,12 @@ class Simulation {
 
     }
 
+    //Checks if the animal is alive, if dead, remove from list
+    private void CheckDeath() {
+        ZebraList.removeIf(zebra -> zebra.getEnergy() < 0);
+        LionList.removeIf(lion -> lion.getEnergy() < 0);
+    }
+
     public void simulate(Simulation simulation) {
 
     }
@@ -103,7 +110,7 @@ class Simulation {
         }
         for (int i = ZEBRACOUNT; i > 0; i--) {
             Zebra newZebra = new Zebra((int)(Math.random()*MAPSIZE), (int)(Math.random()*MAPSIZE),
-                    (int)(Math.random()*MAXSPEED), (int)Math.round(Math.random()*MAXENERGY), (float)Math.random()*MAXDETECT, (int)Math.round(Math.random()*MAXBREEDENERGY), (int)(Math.random()*MAXATTENTION+MINATTENTION));
+                    (int)(Math.random()*MAXSPEED), (int)Math.round(Math.random()*MAXENERGY), (float)Math.random()*MAXDETECT, (int)Math.round(Math.random()*MAXBREEDENERGY), (int)Math.round(Math.random()*MAXWANDERDIRTIME), (int)(Math.random()*MAXATTENTION+MINATTENTION));
             ZebraList.add(newZebra);
         }
         for (int i = LIONCOUNT; i > 0; i--) {

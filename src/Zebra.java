@@ -12,15 +12,14 @@ class Zebra extends Animal {
     private int state; //State of the zebra, 0 = wander, 1 = food, 2 = mate, 3 = run
     private int passion; //How willing the zebra is to mate than to run. (innate)
     private int excitement;
+
     private Plant targetPlant;
     private Zebra targetMate;
     private Lion targetLion;
 
-    private final int WANDERDIRTIMER = 1000;
-
-    public Zebra() {
-
-    }
+//    public Zebra() {
+//
+//    }
 
     public Zebra(int x, int y, int speed) {
         setName("Zebra");
@@ -29,14 +28,15 @@ class Zebra extends Animal {
         setSpeed(speed);
     }
 
-    public Zebra(int x, int y, int speed, int energy, float detectRange, int breedEnergy, int attentionSpan) {
+    public Zebra(int x, int y, int speed, int energy, float detectRange, int breedEnergy, int wanderDirTimer, int attentionSpan) {
+        setName("Zebra");
         setEnergy(energy);
         setSpeed(speed);
         setDetectRange(detectRange);
         setBreedEnergy(breedEnergy);
         setX(x);
         setY(y);
-        setWanderDirTimer(WANDERDIRTIMER);
+        setWanderDirTimer(wanderDirTimer);
         setAttentionSpan(attentionSpan);
     }
 
@@ -104,10 +104,9 @@ class Zebra extends Animal {
         }
     }
 
-    //Controls what the zebra is deciding to do
-    private void Behavior(ArrayList<Plant> plantList, ArrayList<Zebra> zebraList, ArrayList<Lion> lionList) {
+    //Call this method every time step, controls what the zebra is deciding to do
+    private void Update(ArrayList<Plant> plantList, ArrayList<Zebra> zebraList, ArrayList<Lion> lionList) {
         DetectEnemy(lionList);
-
         //Search for mate if enough energy and not running from lion
         if (this.getEnergy() > this.breedEnergy) {
             this.state = 2;
@@ -143,7 +142,7 @@ class Zebra extends Animal {
         float distBetween = Equations.EuclDist(this.targetPlant.getX(),this.targetPlant.getY(),getX(),getY());
         if (distBetween < 0.05) {
             // distBetween < speed : eat
-
+            this.setEnergy(this.getEnergy()+this.targetPlant.getFOODVAL());
             plantList.remove(targetPlant); //removes this plant
             this.targetPlant = null; //clear targetPlant variable
             this.PickNewDir();
