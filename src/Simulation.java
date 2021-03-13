@@ -10,8 +10,10 @@ class Simulation {
     private final float MAPSIZE = 100;
     private final float MAXSPEED = 10;
     private final float MAXENERGY = 1000;
-    private final float maxDetect = 5;
-    private final float maxBreedEnergy = 1000;
+    private final float MAXDETECT = 5;
+    private final float MAXBREEDENERGY = 1000;
+    private final int MAXATTENTION = 3000;
+    private final int MINATTENTION = 100;
 
     private ArrayList<Plant> PlantList = new ArrayList<Plant>(PLANTCOUNT);
     private ArrayList<Zebra> ZebraList = new ArrayList<Zebra>(ZEBRACOUNT);
@@ -30,7 +32,7 @@ class Simulation {
         }
         for (int i = ZEBRACOUNT; i > 0; i--) {
             Zebra newZebra = new Zebra((float)Math.random()*MAPSIZE, (float)Math.random()*MAPSIZE,
-                    (float)Math.random()*MAXSPEED, (int)Math.round(Math.random()*MAXENERGY), (float)Math.random()*maxDetect, (int)Math.round(Math.random()*maxBreedEnergy));
+                    (float)Math.random()*MAXSPEED, (int)Math.round(Math.random()*MAXENERGY), (float)Math.random()*MAXDETECT, (int)Math.round(Math.random()*MAXBREEDENERGY), (int)Math.random()*MAXATTENTION+MINATTENTION);
             ZebraList.add(newZebra);
         }
         for (int i = LIONCOUNT; i > 0; i--) {
