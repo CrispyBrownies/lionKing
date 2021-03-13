@@ -6,20 +6,34 @@ import java.util.*;
 
 class Zebra extends Animal {
 
-    private static int breedEnergy;
-    private int state; //State of the zebra, 0 = wander, 1 = food, 2 = mate
+    private final String name = "Zebra";
+
+    private int breedEnergy;
+    private int state; //State of the zebra, 0 = wander, 1 = food, 2 = mate, 3 = run
     private int passion; //How willing the zebra is to mate than to run. (innate)
     private int excitement;
     private Plant targetPlant;
     private Zebra targetMate;
     private Lion targetLion;
+
     private final int WANDERDIRTIMER = 1000;
 
-    public Zebra(float x, float y, float speed, int energy, float detectRange, int breedEnergy, int attentionSpan) {
+    public Zebra() {
+
+    }
+
+    public Zebra(int x, int y, int speed) {
+        setName("Zebra");
+        setX(x);
+        setY(y);
+        setSpeed(speed);
+    }
+
+    public Zebra(int x, int y, int speed, int energy, float detectRange, int breedEnergy, int attentionSpan) {
         setEnergy(energy);
         setSpeed(speed);
         setDetectRange(detectRange);
-        this.breedEnergy = breedEnergy;
+        setBreedEnergy(breedEnergy);
         setX(x);
         setY(y);
         setWanderDirTimer(WANDERDIRTIMER);
@@ -128,13 +142,15 @@ class Zebra extends Animal {
     private void Eat(ArrayList<Plant> plantList) {
         float distBetween = Equations.EuclDist(this.targetPlant.getX(),this.targetPlant.getY(),getX(),getY());
         if (distBetween < 0.05) {
+            // distBetween < speed : eat
+
             plantList.remove(targetPlant); //removes this plant
             this.targetPlant = null; //clear targetPlant variable
             this.PickNewDir();
         }
     }
 
-    //Runs in opposite direction of the target lion
+//   Runs in opposite direction of the target lion
 //    private void Run() {
 //        Vector<Float> enemyDir = new Vector<Float>();
 //        enemyDir.set(0,this.getX()-this.targetLion.getX());
@@ -159,6 +175,10 @@ class Zebra extends Animal {
             this.setWanderDirTimer(this.getWanderDirTimer()-1);
         }
         Advance();
+    }
+
+    public void setBreedEnergy(int breedEnergy) {
+        this.breedEnergy = breedEnergy;
     }
 
 
