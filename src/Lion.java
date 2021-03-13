@@ -9,9 +9,17 @@ import java.util.Set;
 
 class Lion extends Animal {
 
+    private final String name = "Lion";
     private Zebra targetZebra;
 
     public Lion() { }
+
+    public Lion(int x, int y, int speed) {
+        setName("Lion");
+        setX(x);
+        setY(y);
+        setSpeed(speed);
+    }
 
     public Lion(float x, float y) {
         setName("Lion");
@@ -35,9 +43,6 @@ class Lion extends Animal {
         this.targetZebra = zebraMap.get(minDist);
     }
 
-    public void setX(float x) {
-        super.setX(x);
-    }
 
     public void setEnergy(int energy) {
         super.setEnergy(energy);
@@ -51,12 +56,8 @@ class Lion extends Animal {
         super.setDetectRange(detectRange);
     }
 
-    public void setSpeed(float speed) {
+    public void setSpeed(int speed) {
         super.setSpeed(speed);
-    }
-
-    public void setY(float y) {
-        super.setY(y);
     }
 
     public float getSpeed() {

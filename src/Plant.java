@@ -11,9 +11,9 @@ class Plant {
 
     public Plant() { }
 
-    public Plant(float x, float y) {
-        this.x = x;
-        this.y = y;
+    public Plant(int x, int y) {
+        setX(x);
+        setY(y);
     }
 
     public float getX() {
@@ -22,5 +22,13 @@ class Plant {
 
     public float getY() {
         return y;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
     }
 }

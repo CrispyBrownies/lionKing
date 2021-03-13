@@ -6,26 +6,43 @@ import java.util.Vector;
 
 class Animal {
     private String name;
-    private float speed;
+    private int speed;
     private int energy;
     private float detectRange;
+
+    private double xdirection;
+    private double ydirection;
+
     private Vector<Float> direction;
     private int wanderDirTimer; //How long until animal picks new direction during wander
     private int attentionSpan; //How long until animal gives up on target seeking and enter wander
 
     //position coordinates
-    private float x;
-    private float y;
+    private int x;
+    private int y;
 
     public Animal() {
 
     }
 
+    public void newWanderAngle() {
+        double angle = Math.random()*2*Math.PI;
+        setXdirection(Math.sin(angle));
+        setYdirection(Math.cos(angle));
+    }
+
+    public void move() {
+        setX((int) ((int) (getSpeed()*getXdirection()) + getX()));
+        setY((int) ((int) (getSpeed()*getYdirection()) + getY()));
+    }
+
+
+
     //Sets animal's direction to new random direction
     public void PickNewDir() {
         double newAngle = Math.random()*2*Math.PI;
-        this.direction.set(0,this.speed * (float)Math.cos(newAngle));
-        this.direction.set(1,this.speed * (float)Math.sin(newAngle));
+        this.direction.set(0,getSpeed() * (float)Math.cos(newAngle));
+        this.direction.set(1,getSpeed() * (float)Math.sin(newAngle));
     }
 
     //Handles movement of animal, dir = 1: towards, else: away
@@ -52,7 +69,7 @@ class Animal {
         return speed;
     }
 
-    public void setSpeed(float speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 
@@ -88,11 +105,11 @@ class Animal {
         return y;
     }
 
-    public void setX(float x) {
+    public void setX(int x) {
         this.x = x;
     }
 
-    public void setY(float y) {
+    public void setY(int y) {
         this.y = y;
     }
 
@@ -122,6 +139,22 @@ class Animal {
 
     public String toString() {
         return getName() + ": Position = (" + getX() + ", " + getY() + ")," +
-                " Speed = " + getSpeed() + ", Energy = " + getEnergy() + ", Range = " + getDetectRange();
+                " Speed = " + (getSpeed()-1) + ", Energy = " + getEnergy() + ", Range = " + getDetectRange();
+    }
+
+    public double getXdirection() {
+        return xdirection;
+    }
+
+    public double getYdirection() {
+        return ydirection;
+    }
+
+    public void setXdirection(double xdirection) {
+        this.xdirection = xdirection;
+    }
+
+    public void setYdirection(double ydirection) {
+        this.ydirection = ydirection;
     }
 }
