@@ -39,11 +39,11 @@ class Simulation {
         // Lion movement
         testLion.newWanderAngle();
 
-        for (int w=0; w<3; w++) {
+        for (int w=0; w<10; w++) {
 
             for (int i=0; i<sim.getMAPSIZE(); i++) {
                 for (int j=0; j<sim.getMAPSIZE(); j++) {
-                    map[i][j] = "[ ] ";
+                    map[i][j] = "| | ";
                 }
             }
 
@@ -61,12 +61,12 @@ class Simulation {
                 }
             }
 
-//            for (int i = 0; i < map.length; i++) {
-//                for (int j = 0; j < map[i].length; j++) {
-//                    System.out.print(map[i][j]);
-//                }
-//                System.out.println();
-//            }
+            for (int i = 0; i < map.length; i++) {
+                for (int j = 0; j < map[i].length; j++) {
+                    System.out.print(map[i][j]);
+                }
+                System.out.println();
+            }
 
             try {
                 Thread.sleep(1000);
