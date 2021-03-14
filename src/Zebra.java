@@ -28,7 +28,7 @@ class Zebra extends Animal {
         setSpeed(speed);
     }
 
-    public Zebra(int x, int y, int speed, int energy, float detectRange, int breedEnergy, int wanderDirTimer, int attentionSpan) {
+    public Zebra(int x, int y, int speed, int energy, float detectRange, int breedEnergy, int maxWanderDirTimer, int attentionSpan) {
         setName("Zebra");
         setEnergy(energy);
         setSpeed(speed);
@@ -36,7 +36,8 @@ class Zebra extends Animal {
         setBreedEnergy(breedEnergy);
         setX(x);
         setY(y);
-        setWanderDirTimer(wanderDirTimer);
+        setWanderDirTimer(maxWanderDirTimer);
+        setMaxWanderDirTimer(maxWanderDirTimer);
         setAttentionSpan(attentionSpan);
     }
 
@@ -167,7 +168,7 @@ class Zebra extends Animal {
     //Call every time step during wander phase
     private void Wander() {
         if (this.getWanderDirTimer() == 0) {
-            this.setWanderDirTimer(WANDERDIRTIMER);
+            this.setWanderDirTimer(this.getMaxWanderDirTimer());
             this.PickNewDir();
         }
         else {

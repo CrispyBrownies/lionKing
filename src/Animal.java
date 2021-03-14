@@ -15,6 +15,7 @@ class Animal {
 
     private Vector<Float> direction;
     private int wanderDirTimer; //How long until animal picks new direction during wander
+    private int maxWanderDirTimer;
     private int attentionSpan; //How long until animal gives up on target seeking and enter wander
 
     //position coordinates
@@ -157,5 +158,13 @@ class Animal {
 
     public void setYdirection(double ydirection) {
         this.ydirection = ydirection;
+    }
+
+    public void setMaxWanderDirTimer(int maxWanderDirTimer) {
+        this.maxWanderDirTimer = maxWanderDirTimer;
+    }
+
+    public int getMaxWanderDirTimer() {
+        return maxWanderDirTimer;
     }
 }
