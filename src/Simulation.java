@@ -26,21 +26,21 @@ class Simulation {
         Simulation sim = new Simulation();
         int randomSpeed = (int) (Math.random()*sim.getMAXSPEED());
 
-        Lion testLion = new Lion((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()), 2);
-        Zebra testZebra = new Zebra((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()), 2);
+        Lion testLion = new Lion((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()), 2,sim.getMAPSIZE());
+        Zebra testZebra = new Zebra((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()), 2, sim.getMAPSIZE());
         Plant plant1 = new Plant((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()));
 
         String[][] map = new String[sim.getMAPSIZE()][sim.getMAPSIZE()];
 
 
         // Zebra movement
-        testZebra.newWanderAngle();
+        testZebra.newWanderAngle(0);
 
 
         // Lion movement
-        testLion.newWanderAngle();
+        testLion.newWanderAngle(0);
 
-        for (int w=0; w<10; w++) {
+        for (int w=0; w<50; w++) {
 
             for (int i=0; i<sim.getMAPSIZE(); i++) {
                 for (int j=0; j<sim.getMAPSIZE(); j++) {
@@ -70,7 +70,7 @@ class Simulation {
             }
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -81,7 +81,6 @@ class Simulation {
 //            System.out.println(testZebra.getXdirection());
 //            System.out.println(testZebra.getYdirection());
             testLion.move();
-
         }
 
     }

@@ -17,11 +17,12 @@ class Lion extends Animal {
 
     public Lion() { }
 
-    public Lion(int x, int y, int speed) {
+    public Lion(int x, int y, int speed, int environmentSize) {
         setName("Lion");
         setX(x);
         setY(y);
         setSpeed(speed);
+        setEnvironmentSize(environmentSize);
     }
 
     public Lion(float x, float y) {
