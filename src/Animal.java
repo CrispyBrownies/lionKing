@@ -22,19 +22,68 @@ class Animal {
     private float x;
     private float y;
 
+    private int environmentSize;
+
     public Animal() {
 
     }
 
-    public void newWanderAngle() {
+    public void newWanderAngle(int a) {
         double angle = Math.random()*2*Math.PI;
         setXdirection(Math.sin(angle));
         setYdirection(Math.cos(angle));
     }
 
     public void move() {
-        setX((int) ((int) (getSpeed()*getXdirection()) + getX()));
-        setY((int) ((int) (getSpeed()*getYdirection()) + getY()));
+
+        // walls
+        // left wall
+        int newXPosition = (int) (getSpeed()*getXdirection()) + getX();
+        int newYPosition = (int) (getSpeed()*getYdirection()) + getY();
+        int d;
+
+        if ((getX() == 0 && getXdirection()<0) || (getX()==getEnvironmentSize()-1 && getXdirection()>0)) {
+            setXdirection(-1*getXdirection());
+            setX((int) (getSpeed()*getXdirection()) + getX());
+
+        }
+        if ((getY() == 0 && getYdirection()<0) || (getY()==getEnvironmentSize()-1 && getYdirection()>0)) {
+            setYdirection(-1*getYdirection());
+            setY((int) (getSpeed()*getYdirection()) + getY());
+
+        }
+
+        if (newXPosition < 0 && newYPosition < 0) {
+            setX(0);
+            setY(0);
+            return;
+        } else if (newXPosition > getEnvironmentSize()-1 && newYPosition > getEnvironmentSize()-1) {
+            setX(getEnvironmentSize()-1);
+            setY(getEnvironmentSize()-1);
+            return;
+        } else if (newXPosition < 0) {
+            d = getX();
+            setX(0);
+            setY((int) (d*getYdirection() + getY()));
+            return;
+        } else if (newXPosition > getEnvironmentSize()-1) {
+            d = getEnvironmentSize()-1-getX();
+            setX(getEnvironmentSize()-1);
+            setY((int) (d*getYdirection()) + getY());
+            return;
+        } else if (newYPosition < 0) {
+            d = getY();
+            setY(0);
+            setX((int) (d*getXdirection()) + getX());
+            return;
+        } else if (newYPosition > getEnvironmentSize()-1) {
+            d = getEnvironmentSize()-1-getY();
+            setY(getEnvironmentSize()-1);
+            setX((int) (d*getXdirection()) + getX());
+            return;
+        }
+        setX(newXPosition);
+        setY(newYPosition);
     }
 
     //Sets animal's direction to new random direction
@@ -104,11 +153,11 @@ class Animal {
         this.name = name;
     }
 
-    public float getX() {
+    public int getX() {
         return x;
     }
 
-    public float getY() {
+    public int getY() {
         return y;
     }
 
@@ -171,5 +220,13 @@ class Animal {
 
     public int getMaxWanderDirTimer() {
         return maxWanderDirTimer;
+    }
+
+    public int getEnvironmentSize() {
+        return environmentSize;
+    }
+
+    public void setEnvironmentSize(int environmentSize) {
+        this.environmentSize = environmentSize;
     }
 }

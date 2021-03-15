@@ -31,11 +31,12 @@ class Zebra extends Animal {
 //
 //    }
 
-    public Zebra(int x, int y, int speed) {
+    public Zebra(int x, int y, int speed, int environmentSize) {
         setName("Zebra");
         setX(x);
         setY(y);
         setSpeed(speed);
+        setEnvironmentSize(environmentSize);
     }
 
     public Zebra(int x, int y, float speed, int energy, float detectRange, int breedEnergy, int maxWanderDirTimer, int attentionSpan) {
