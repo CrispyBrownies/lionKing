@@ -121,24 +121,24 @@ class Zebra extends Animal {
     }
 
     //Call this method every time step, controls what the zebra is deciding to do
-    public void Update(ArrayList<Plant> plantList, ArrayList<Zebra> zebraList, ArrayList<Lion> lionList) {
+    public void Update(ArrayList<Plant> plantList, ArrayList<Zebra> zebraList, ArrayList<Lion> lionList, int mapSize) {
         DetectEnemy(lionList);
         DetectPlant(plantList);
         //Search for mate if enough energy and not running from lion
 //        if (this.getEnergy() > this.breedEnergy) {
 //            this.state = 2;
 //        }
-        System.out.println("State: "+this.state);
+        //System.out.println("State: "+this.state);
         //System.out.println("Direction: "+this.getDirection());
         switch (this.state) {
             case 0: //wandering phase
-                System.out.println("NO FOOD");
-                Wander();
+                //System.out.println("NO FOOD");
+                Wander(mapSize);
                 break;
             case 1: //searching for food
-                System.out.println("FOOD");
+                //System.out.println("FOOD");
                 if (this.targetPlant != null) {
-                    Move(this.targetPlant.getX(),this.targetPlant.getY(),1);
+                    Move(this.targetPlant.getX(),this.targetPlant.getY(),1,mapSize);
                     Eat(plantList);
                 }
                 break;
@@ -189,7 +189,7 @@ class Zebra extends Animal {
     }
 
     //Call every time step during wander phase
-    private void Wander() {
+    private void Wander(int mapSize) {
         System.out.println("Wander Timer: "+this.getWanderDirTimer());
         if (this.getWanderDirTimer() == 0) {
             this.setWanderDirTimer(this.getMaxWanderDirTimer());
@@ -198,7 +198,7 @@ class Zebra extends Animal {
         else {
             this.setWanderDirTimer(this.getWanderDirTimer()-1);
         }
-        Advance();
+        Advance(mapSize);
     }
 
     public void setBreedEnergy(int breedEnergy) {

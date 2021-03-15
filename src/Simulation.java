@@ -16,11 +16,11 @@ import java.lang.Math;
 class Simulation {
     
     private final int PLANTCOUNT = 100;
-    private final int ZEBRACOUNT = 10;
-    private final int LIONCOUNT = 0;
+    private final int ZEBRACOUNT = 20;
+    private final int LIONCOUNT = 1;
 
     private final int MAPSIZE = 100;
-    private final int MAXSPEED = 1;
+    private final float MAXSPEED = 0.5f;
     private final int MAXENERGY = 1000;
     private final int MAXDETECT = 10;
     private final int MAXBREEDENERGY = 1000;
@@ -67,10 +67,11 @@ class Simulation {
                     graphics.DrawPlant(plant);
                 }
                 for (Zebra zebra: sim.ZebraList) {
-                    zebra.Update(sim.getPlantList(),sim.getZebraList(),sim.getLionList());
+                    zebra.Update(sim.getPlantList(),sim.getZebraList(),sim.getLionList(),sim.getMAPSIZE());
                     graphics.DrawZebra(zebra);
                 }
                 for (Lion lion: sim.LionList) {
+                    lion.Update(sim.getZebraList(),sim.getMAPSIZE());
                     graphics.DrawLion(lion);
                 }
                 sim.spawnFoodTimer -= 1;
@@ -157,11 +158,11 @@ class Simulation {
 
     private void CreateSim() {
         for (int i = PLANTCOUNT; i > 0; i--) {
-            Plant newPlant = new Plant((int) (Math.random()*getMAPSIZE()), (int) (Math.random()*getMAPSIZE()));
+            Plant newPlant = new Plant((int) (Math.random()*2*MAPSIZE), (int) (Math.random()*2*MAPSIZE));
             PlantList.add(newPlant);
         }
         for (int i = ZEBRACOUNT; i > 0; i--) {
-            Zebra newZebra = new Zebra((int)(Math.random()*MAPSIZE), (int)(Math.random()*MAPSIZE),
+            Zebra newZebra = new Zebra((int)(Math.random()*2*MAPSIZE), (int)(Math.random()*2*MAPSIZE),
                     (float)(Math.random()*MAXSPEED), (int)Math.round(Math.random()*MAXENERGY), (float)Math.random()*MAXDETECT, (int)Math.round(Math.random()*MAXBREEDENERGY), (int)Math.round(Math.random()*MAXWANDERDIRTIME), (int)(Math.random()*MAXATTENTION+MINATTENTION));
             ZebraList.add(newZebra);
         }

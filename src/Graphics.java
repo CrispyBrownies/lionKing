@@ -1,3 +1,7 @@
+
+//Created: 3/13/2021
+//Handles graphics rendering
+
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -90,8 +94,8 @@ public class Graphics {
     public void DrawZebra(Zebra zebra) {
         GL11.glColor3f(170f/255f,170f/255f,170f/255f);
 
-        float x = zebra.getX()/100-0.5f;
-        float y = zebra.getY()/100-0.5f;
+        float x = zebra.getX()/100-1f;
+        float y = zebra.getY()/100-1f;
 
         glBegin(GL_QUADS);
         glVertex2f(x-1f/100f, y+1f/100f);
@@ -104,8 +108,8 @@ public class Graphics {
     public void DrawLion(Lion lion) {
         GL11.glColor3f(243f/255f,105f/255f,25f/255f);
 
-        float x = lion.getX()/100-0.5f;
-        float y = lion.getY()/100-0.5f;
+        float x = lion.getX()/100-1f;
+        float y = lion.getY()/100-1f;
 
         glBegin(GL_QUADS);
         glVertex2f(x-1f/100f, y+1f/100f);
@@ -118,8 +122,8 @@ public class Graphics {
     public void DrawPlant(Plant plant) {
         GL11.glColor3f(10f/255f,153f/255f,35f/255f);
 
-        float x = plant.getX()/100-0.5f;
-        float y = plant.getY()/100-0.5f;
+        float x = plant.getX()/100-1f;
+        float y = plant.getY()/100-1f;
 
         glBegin(GL_QUADS);
         glVertex2f(x-1f/100f, y+1f/100f);

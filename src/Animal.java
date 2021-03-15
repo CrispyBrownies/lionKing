@@ -28,62 +28,77 @@ class Animal {
 
     }
 
-    public void newWanderAngle(int a) {
-        double angle = Math.random()*2*Math.PI;
-        setXdirection(Math.sin(angle));
-        setYdirection(Math.cos(angle));
-    }
+//    public void newWanderAngle(int a) {
+//        double angle = Math.random()*2*Math.PI;
+//        setXdirection(Math.sin(angle));
+//        setYdirection(Math.cos(angle));
+//    }
 
-    public void move() {
+//    public void move() {
+//
+//        // walls
+//        // left wall
+//        int newXPosition = (int) (getSpeed()*getXdirection()) + getX();
+//        int newYPosition = (int) (getSpeed()*getYdirection()) + getY();
+//        int d;
+//
+//        if ((getX() == 0 && getXdirection()<0) || (getX()==getEnvironmentSize()-1 && getXdirection()>0)) {
+//            setXdirection(-1*getXdirection());
+//            setX((int) (getSpeed()*getXdirection()) + getX());
+//
+//        }
+//        if ((getY() == 0 && getYdirection()<0) || (getY()==getEnvironmentSize()-1 && getYdirection()>0)) {
+//            setYdirection(-1*getYdirection());
+//            setY((int) (getSpeed()*getYdirection()) + getY());
+//
+//        }
+//
+//        if (newXPosition < 0 && newYPosition < 0) {
+//            setX(0);
+//            setY(0);
+//            return;
+//        } else if (newXPosition > getEnvironmentSize()-1 && newYPosition > getEnvironmentSize()-1) {
+//            setX(getEnvironmentSize()-1);
+//            setY(getEnvironmentSize()-1);
+//            return;
+//        } else if (newXPosition < 0) {
+//            d = getX();
+//            setX(0);
+//            setY((int) (d*getYdirection() + getY()));
+//            return;
+//        } else if (newXPosition > getEnvironmentSize()-1) {
+//            d = getEnvironmentSize()-1-getX();
+//            setX(getEnvironmentSize()-1);
+//            setY((int) (d*getYdirection()) + getY());
+//            return;
+//        } else if (newYPosition < 0) {
+//            d = getY();
+//            setY(0);
+//            setX((int) (d*getXdirection()) + getX());
+//            return;
+//        } else if (newYPosition > getEnvironmentSize()-1) {
+//            d = getEnvironmentSize()-1-getY();
+//            setY(getEnvironmentSize()-1);
+//            setX((int) (d*getXdirection()) + getX());
+//            return;
+//        }
+//        setX(newXPosition);
+//        setY(newYPosition);
+//    }
 
-        // walls
-        // left wall
-        int newXPosition = (int) (getSpeed()*getXdirection()) + getX();
-        int newYPosition = (int) (getSpeed()*getYdirection()) + getY();
-        int d;
+    //Calculates if next move will be outside the map
+    public boolean CheckCollision(int mapSize) {
+        float nextX = this.x+this.direction.get(0)*this.speed;
+        float nextY = this.y+this.direction.get(1)*this.speed;
 
-        if ((getX() == 0 && getXdirection()<0) || (getX()==getEnvironmentSize()-1 && getXdirection()>0)) {
-            setXdirection(-1*getXdirection());
-            setX((int) (getSpeed()*getXdirection()) + getX());
-
+        System.out.println("Next Pos:  "+nextX+ " "+nextY );
+        if (nextX > 2*mapSize || nextX < 0 || nextY > 2*mapSize || nextY < 0) {
+            System.out.println("OUT");
+            return true;
         }
-        if ((getY() == 0 && getYdirection()<0) || (getY()==getEnvironmentSize()-1 && getYdirection()>0)) {
-            setYdirection(-1*getYdirection());
-            setY((int) (getSpeed()*getYdirection()) + getY());
-
+        else {
+            return false;
         }
-
-        if (newXPosition < 0 && newYPosition < 0) {
-            setX(0);
-            setY(0);
-            return;
-        } else if (newXPosition > getEnvironmentSize()-1 && newYPosition > getEnvironmentSize()-1) {
-            setX(getEnvironmentSize()-1);
-            setY(getEnvironmentSize()-1);
-            return;
-        } else if (newXPosition < 0) {
-            d = getX();
-            setX(0);
-            setY((int) (d*getYdirection() + getY()));
-            return;
-        } else if (newXPosition > getEnvironmentSize()-1) {
-            d = getEnvironmentSize()-1-getX();
-            setX(getEnvironmentSize()-1);
-            setY((int) (d*getYdirection()) + getY());
-            return;
-        } else if (newYPosition < 0) {
-            d = getY();
-            setY(0);
-            setX((int) (d*getXdirection()) + getX());
-            return;
-        } else if (newYPosition > getEnvironmentSize()-1) {
-            d = getEnvironmentSize()-1-getY();
-            setY(getEnvironmentSize()-1);
-            setX((int) (d*getXdirection()) + getX());
-            return;
-        }
-        setX(newXPosition);
-        setY(newYPosition);
     }
 
     //Sets animal's direction to new random direction
@@ -97,7 +112,7 @@ class Animal {
     }
 
     //Handles movement of animal, dir = 1: towards, else: away
-    public void Move(float targetx, float targety, int dir) {
+    public void Move(float targetx, float targety, int dir, int mapSize) {
         Vector<Float> moveDir = new Vector<Float>();
         float magnitude = Equations.EuclDist(targetx,targety,this.x,this.y);
         if (dir == 0) {
@@ -109,14 +124,19 @@ class Animal {
             moveDir.add((targety-this.y)/magnitude);
         }
         this.direction = moveDir;
-        Advance();
+        Advance(mapSize);
     }
 
-    public void Advance() {
+    public void Advance(int mapSize) {
         System.out.println("Direction: "+this.direction);
         System.out.println("Position: "+this.x+" "+this.y);
         System.out.println("Speed: "+this.speed);
         //this.energy -= (int)Equations.EnergyCost(this.direction);
+
+        while (CheckCollision(mapSize)) {
+            this.PickNewDir();
+        }
+
         this.x += this.direction.get(0)*this.speed;
         this.y += this.direction.get(1)*this.speed;
     }
@@ -153,11 +173,11 @@ class Animal {
         this.name = name;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 

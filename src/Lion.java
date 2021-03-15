@@ -17,19 +17,21 @@ class Lion extends Animal {
 
     public Lion() { }
 
-    public Lion(int x, int y, int speed, int environmentSize) {
-        setName("Lion");
-        setX(x);
-        setY(y);
-        setSpeed(speed);
-        setEnvironmentSize(environmentSize);
-    }
+//    public Lion(int x, int y, int speed, int environmentSize) {
+//        setName("Lion");
+//        setX(x);
+//        setY(y);
+//        setSpeed(speed);
+//        setEnvironmentSize(environmentSize);
+//    }
 
     public Lion(float x, float y) {
         setName("Lion");
         setEnergy(10000);
-        setSpeed(10);
-        setDetectRange(7);
+        setSpeed(0.7f);
+        setDetectRange(10);
+        setWanderDirTimer(WANDERDIRTIMER);
+        this.PickNewDir();
     }
 
     //Checks for nearby zebras and selects closest one as target
@@ -42,13 +44,15 @@ class Lion extends Animal {
                 zebraMap.put(distBetween, zebra);
             }
         }
-        Set<Float> distances = zebraMap.keySet();
-        float minDist = Collections.min(distances);
-        this.targetZebra = zebraMap.get(minDist);
+        if (zebraMap.size()>0) {
+            Set<Float> distances = zebraMap.keySet();
+            float minDist = Collections.min(distances);
+            this.targetZebra = zebraMap.get(minDist);
+        }
     }
 
     //Call this method every time step
-    public void Update(ArrayList<Zebra> zebraList) {
+    public void Update(ArrayList<Zebra> zebraList, int mapSize) {
         DetectZebra(zebraList);
         if (this.targetZebra != null) {
             if (this.getAttentionSpan() == 0) {
@@ -57,10 +61,26 @@ class Lion extends Animal {
             }
             else {
                 this.setAttentionSpan(this.getAttentionSpan()-1);
-                Move(targetZebra.getX(), targetZebra.getY(), 0);
+                Move(targetZebra.getX(), targetZebra.getY(), 1, mapSize);
                 EatZebra(zebraList);
             }
         }
+        else {
+            Wander(mapSize);
+        }
+    }
+
+    //Call every time step during wander phase
+    private void Wander(int mapSize) {
+        //System.out.println("Wander Timer: "+this.getWanderDirTimer());
+        if (this.getWanderDirTimer() == 0) {
+            this.setWanderDirTimer(this.WANDERDIRTIMER);
+            this.PickNewDir();
+        }
+        else {
+            this.setWanderDirTimer(this.getWanderDirTimer()-1);
+        }
+        Advance(mapSize);
     }
 
     private void EatZebra(ArrayList<Zebra> zebraList) {
