@@ -1,7 +1,17 @@
 
 //Created: 3/11/2021
 //Main class for Zebra (prey)
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.*;
+import org.lwjgl.system.*;
 
+import java.nio.*;
+
+import static org.lwjgl.glfw.Callbacks.*;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.system.MemoryStack.*;
+import static org.lwjgl.system.MemoryUtil.*;
 import java.util.*;
 
 class Zebra extends Animal {
@@ -28,7 +38,7 @@ class Zebra extends Animal {
         setSpeed(speed);
     }
 
-    public Zebra(int x, int y, int speed, int energy, float detectRange, int breedEnergy, int maxWanderDirTimer, int attentionSpan) {
+    public Zebra(int x, int y, float speed, int energy, float detectRange, int breedEnergy, int maxWanderDirTimer, int attentionSpan) {
         setName("Zebra");
         setEnergy(energy);
         setSpeed(speed);
@@ -39,12 +49,12 @@ class Zebra extends Animal {
         setWanderDirTimer(maxWanderDirTimer);
         setMaxWanderDirTimer(maxWanderDirTimer);
         setAttentionSpan(attentionSpan);
+        this.PickNewDir();
     }
 
     //Searches for plants in detection range, sets target plant to nearest plant
     private void DetectPlant(ArrayList<Plant> plantList) {
         HashMap<Float, Plant> plantMap = new HashMap<Float, Plant>();
-
         //Looking for food in range
         for (Plant plant:plantList) {
             float distBetween = Equations.EuclDist(plant.getX(),plant.getY(),getX(),getY());
@@ -56,6 +66,10 @@ class Zebra extends Animal {
             Set<Float> distances = plantMap.keySet();
             float minDist = Collections.min(distances);
             this.targetPlant = plantMap.get(minDist);
+            this.state = 1;
+        }
+        else {
+            this.state = 0;
         }
     }
 
@@ -80,7 +94,7 @@ class Zebra extends Animal {
         }
     }
 
-    //Searches for nearby enemys within detection range, sets nearest lion to target lion
+    //Searches for nearby enemies within detection range, sets nearest lion to target lion
     private void DetectEnemy(ArrayList<Lion> lionList) {
         HashMap<Float, Lion> lionMap = new HashMap<Float, Lion>();
 
@@ -106,25 +120,33 @@ class Zebra extends Animal {
     }
 
     //Call this method every time step, controls what the zebra is deciding to do
-    private void Update(ArrayList<Plant> plantList, ArrayList<Zebra> zebraList, ArrayList<Lion> lionList) {
+    public void Update(ArrayList<Plant> plantList, ArrayList<Zebra> zebraList, ArrayList<Lion> lionList) {
         DetectEnemy(lionList);
+        DetectPlant(plantList);
         //Search for mate if enough energy and not running from lion
-        if (this.getEnergy() > this.breedEnergy) {
-            this.state = 2;
-        }
+//        if (this.getEnergy() > this.breedEnergy) {
+//            this.state = 2;
+//        }
+        System.out.println("State: "+this.state);
+        //System.out.println("Direction: "+this.getDirection());
         switch (this.state) {
             case 0: //wandering phase
+                System.out.println("NO FOOD");
                 Wander();
+                break;
             case 1: //searching for food
-                DetectPlant(plantList);
-                Move(this.targetPlant.getX(),this.targetPlant.getY(),0);
-                Eat(plantList);
-            case 2: //searching for mate
-                DetectMate(zebraList);
-                Move(this.targetMate.getX(),this.targetMate.getY(),0);
-                Mate();
-            case 3: //running from predator
-                Move(this.targetLion.getX(),this.targetLion.getY(),1);
+                System.out.println("FOOD");
+                if (this.targetPlant != null) {
+                    Move(this.targetPlant.getX(),this.targetPlant.getY(),1);
+                    Eat(plantList);
+                }
+                break;
+//            case 2: //searching for mate
+//                DetectMate(zebraList);
+//                Move(this.targetMate.getX(),this.targetMate.getY(),0);
+//                Mate();
+//            case 3: //running from predator
+//                Move(this.targetLion.getX(),this.targetLion.getY(),1);
         }
     }
 
@@ -141,7 +163,7 @@ class Zebra extends Animal {
     //Handles the eating of plants
     private void Eat(ArrayList<Plant> plantList) {
         float distBetween = Equations.EuclDist(this.targetPlant.getX(),this.targetPlant.getY(),getX(),getY());
-        if (distBetween < 0.05) {
+        if (distBetween < 0.5) {
             // distBetween < speed : eat
             this.setEnergy(this.getEnergy()+this.targetPlant.getFOODVAL());
             plantList.remove(targetPlant); //removes this plant
@@ -167,6 +189,7 @@ class Zebra extends Animal {
 
     //Call every time step during wander phase
     private void Wander() {
+        System.out.println("Wander Timer: "+this.getWanderDirTimer());
         if (this.getWanderDirTimer() == 0) {
             this.setWanderDirTimer(this.getMaxWanderDirTimer());
             this.PickNewDir();
@@ -180,7 +203,4 @@ class Zebra extends Animal {
     public void setBreedEnergy(int breedEnergy) {
         this.breedEnergy = breedEnergy;
     }
-
-
-
 }

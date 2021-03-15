@@ -6,7 +6,7 @@ import java.util.Vector;
 
 class Animal {
     private String name;
-    private int speed;
+    private float speed;
     private int energy;
     private float detectRange;
 
@@ -19,8 +19,8 @@ class Animal {
     private int attentionSpan; //How long until animal gives up on target seeking and enter wander
 
     //position coordinates
-    private int x;
-    private int y;
+    private float x;
+    private float y;
 
     public Animal() {
 
@@ -37,41 +37,46 @@ class Animal {
         setY((int) ((int) (getSpeed()*getYdirection()) + getY()));
     }
 
-
-
     //Sets animal's direction to new random direction
     public void PickNewDir() {
         double newAngle = Math.random()*2*Math.PI;
-        this.direction.set(0,getSpeed() * (float)Math.cos(newAngle));
-        this.direction.set(1,getSpeed() * (float)Math.sin(newAngle));
+        Vector<Float> moveDir = new Vector<Float>();
+        System.out.println(getSpeed());
+        moveDir.add((float)Math.cos(newAngle));
+        moveDir.add((float)Math.sin(newAngle));
+        this.direction = moveDir;
     }
 
     //Handles movement of animal, dir = 1: towards, else: away
-    public void Move(float x, float y, int dir) {
+    public void Move(float targetx, float targety, int dir) {
         Vector<Float> moveDir = new Vector<Float>();
+        float magnitude = Equations.EuclDist(targetx,targety,this.x,this.y);
         if (dir == 0) {
-            moveDir.set(0,x-this.x);
-            moveDir.set(1,y-this.y);
+            moveDir.add((this.x-targetx)/magnitude);
+            moveDir.add((this.y-targety)/magnitude);
         }
         else {
-            moveDir.set(0,this.x-x);
-            moveDir.set(1,this.y-y);
+            moveDir.add((targetx-this.x)/magnitude);
+            moveDir.add((targety-this.y)/magnitude);
         }
         this.direction = moveDir;
         Advance();
     }
 
     public void Advance() {
-        this.energy -= Equations.EnergyCost(this.direction);
-        this.x += this.direction.get(0);
-        this.y += this.direction.get(1);
+        System.out.println("Direction: "+this.direction);
+        System.out.println("Position: "+this.x+" "+this.y);
+        System.out.println("Speed: "+this.speed);
+        //this.energy -= (int)Equations.EnergyCost(this.direction);
+        this.x += this.direction.get(0)*this.speed;
+        this.y += this.direction.get(1)*this.speed;
     }
 
     public float getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(float speed) {
         this.speed = speed;
     }
 
