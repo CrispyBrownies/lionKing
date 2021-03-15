@@ -37,8 +37,6 @@ class Simulation {
 
     public static void main(String[] args) throws IOException {
 
-        sim.CreateSim();
-
         Graphics graphics = new Graphics();
         Simulation sim = new Simulation();
 
