@@ -8,9 +8,8 @@ class Equations {
         return dist;
     }
 
-    public static float EnergyCost(Vector<Float> velocity) {
-        float speed = (float)Math.sqrt(velocity.get(1)*velocity.get(1)+velocity.get(2)*velocity.get(2));
-        float energyCost = speed; //Equation to calculate energy cost based on speed
+    public static float EnergyCost(float speed) {
+        float energyCost = 0.001f*speed; //Equation to calculate energy cost based on speed
         return energyCost;
     }
 

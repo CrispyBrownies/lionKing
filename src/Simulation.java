@@ -16,12 +16,12 @@ import java.lang.Math;
 class Simulation {
     
     private final int PLANTCOUNT = 100;
-    private final int ZEBRACOUNT = 20;
+    private final int ZEBRACOUNT = 1;
     private final int LIONCOUNT = 1;
 
     private final int MAPSIZE = 100;
     private final float MAXSPEED = 0.5f;
-    private final int MAXENERGY = 1000;
+    private final float MAXENERGY = 1000f;
     private final int MAXDETECT = 10;
     private final int MAXBREEDENERGY = 1000;
     private final int MAXATTENTION = 3000;
@@ -63,6 +63,7 @@ class Simulation {
                     sim.PlantList.add(new Plant((int) (Math.random()*sim.getMAPSIZE()), (int) (Math.random()*sim.getMAPSIZE())));
                 }
 
+                sim.CheckDeath();
                 for (Plant plant: sim.PlantList) {
                     graphics.DrawPlant(plant);
                 }
@@ -80,72 +81,13 @@ class Simulation {
             RunSim = false;
         }
 
-//        int randomSpeed = (int) (Math.random()*sim.getMAXSPEED());
-//
-//        Lion testLion = new Lion((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()), 2);
-//        Zebra testZebra = new Zebra((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()), 2);
-//        Plant plant1 = new Plant((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()));
-//
-//        String[][] map = new String[sim.getMAPSIZE()][sim.getMAPSIZE()];
-//
-//
-//        // Zebra movement
-//        testZebra.newWanderAngle();
-//
-//
-//        // Lion movement
-//        testLion.newWanderAngle();
-
-//        for (int w=0; w<10; w++) {
-//
-//            for (int i=0; i<sim.getMAPSIZE(); i++) {
-//                for (int j=0; j<sim.getMAPSIZE(); j++) {
-//                    map[i][j] = "| | ";
-//                }
-//            }
-//
-//            for (int i = 0; i < map.length; i++) {
-//                for (int j = 0; j < map[i].length; j++) {
-//                    if (testLion.getX() == i && testLion.getY() == j) {
-//                        map[i][j] = "[L] ";
-//                    }
-//                    if (testZebra.getX() == i && testZebra.getY() == j) {
-//                        map[i][j] = "[Z] ";
-//                    }
-//                    if (plant1.getX() == i && plant1.getY() == j) {
-//                        map[i][j] = "[P] ";
-//                    }
-//                }
-//            }
-//
-//            for (int i = 0; i < map.length; i++) {
-//                for (int j = 0; j < map[i].length; j++) {
-//                    System.out.print(map[i][j]);
-//                }
-//                System.out.println();
-//            }
-//
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//            testZebra.move();
-//            System.out.println(testZebra);
-//            System.out.println(testLion);
-////            System.out.println(testZebra.getXdirection());
-////            System.out.println(testZebra.getYdirection());
-//            testLion.move();
-//
-//        }
         graphics.term();
     }
 
     //Checks if the animal is alive, if dead, remove from list
     private void CheckDeath() {
-        ZebraList.removeIf(zebra -> zebra.getEnergy() < 0);
-        LionList.removeIf(lion -> lion.getEnergy() < 0);
+        ZebraList.removeIf(zebra -> zebra.getEnergy() <= 0);
+        LionList.removeIf(lion -> lion.getEnergy() <= 0);
     }
 
     public void simulate(Simulation simulation) {
@@ -163,7 +105,7 @@ class Simulation {
         }
         for (int i = ZEBRACOUNT; i > 0; i--) {
             Zebra newZebra = new Zebra((int)(Math.random()*2*MAPSIZE), (int)(Math.random()*2*MAPSIZE),
-                    (float)(Math.random()*MAXSPEED), (int)Math.round(Math.random()*MAXENERGY), (float)Math.random()*MAXDETECT, (int)Math.round(Math.random()*MAXBREEDENERGY), (int)Math.round(Math.random()*MAXWANDERDIRTIME), (int)(Math.random()*MAXATTENTION+MINATTENTION));
+                    (float)(Math.random()*MAXSPEED), (float)Math.random()*MAXENERGY, (float)Math.random()*MAXDETECT, (int)Math.round(Math.random()*MAXBREEDENERGY), (int)Math.round(Math.random()*MAXWANDERDIRTIME), (int)(Math.random()*MAXATTENTION+MINATTENTION));
             ZebraList.add(newZebra);
         }
         for (int i = LIONCOUNT; i > 0; i--) {
@@ -235,4 +177,66 @@ class Simulation {
     public void setZebraList(ArrayList<Zebra> zebraList) {
         ZebraList = zebraList;
     }
+
+
+//        int randomSpeed = (int) (Math.random()*sim.getMAXSPEED());
+//
+//        Lion testLion = new Lion((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()), 2);
+//        Zebra testZebra = new Zebra((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()), 2);
+//        Plant plant1 = new Plant((int) (Math.random()* sim.getMAPSIZE()), (int) (Math.random()* sim.getMAPSIZE()));
+//
+//        String[][] map = new String[sim.getMAPSIZE()][sim.getMAPSIZE()];
+//
+//
+//        // Zebra movement
+//        testZebra.newWanderAngle();
+//
+//
+//        // Lion movement
+//        testLion.newWanderAngle();
+
+//        for (int w=0; w<10; w++) {
+//
+//            for (int i=0; i<sim.getMAPSIZE(); i++) {
+//                for (int j=0; j<sim.getMAPSIZE(); j++) {
+//                    map[i][j] = "| | ";
+//                }
+//            }
+//
+//            for (int i = 0; i < map.length; i++) {
+//                for (int j = 0; j < map[i].length; j++) {
+//                    if (testLion.getX() == i && testLion.getY() == j) {
+//                        map[i][j] = "[L] ";
+//                    }
+//                    if (testZebra.getX() == i && testZebra.getY() == j) {
+//                        map[i][j] = "[Z] ";
+//                    }
+//                    if (plant1.getX() == i && plant1.getY() == j) {
+//                        map[i][j] = "[P] ";
+//                    }
+//                }
+//            }
+//
+//            for (int i = 0; i < map.length; i++) {
+//                for (int j = 0; j < map[i].length; j++) {
+//                    System.out.print(map[i][j]);
+//                }
+//                System.out.println();
+//            }
+//
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//            testZebra.move();
+//            System.out.println(testZebra);
+//            System.out.println(testLion);
+////            System.out.println(testZebra.getXdirection());
+////            System.out.println(testZebra.getYdirection());
+//            testLion.move();
+//
+//        }
+
 }

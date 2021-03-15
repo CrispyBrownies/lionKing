@@ -18,7 +18,7 @@ class Zebra extends Animal {
 
     private final String name = "Zebra";
 
-    private int breedEnergy;
+    private float breedEnergy;
     private int state; //State of the zebra, 0 = wander, 1 = food, 2 = mate, 3 = run
     private int passion; //How willing the zebra is to mate than to run. (innate)
     private int excitement;
@@ -39,7 +39,7 @@ class Zebra extends Animal {
         setEnvironmentSize(environmentSize);
     }
 
-    public Zebra(int x, int y, float speed, int energy, float detectRange, int breedEnergy, int maxWanderDirTimer, int attentionSpan) {
+    public Zebra(int x, int y, float speed, float energy, float detectRange, int breedEnergy, int maxWanderDirTimer, int attentionSpan) {
         setName("Zebra");
         setEnergy(energy);
         setSpeed(speed);
@@ -123,12 +123,14 @@ class Zebra extends Animal {
     //Call this method every time step, controls what the zebra is deciding to do
     public void Update(ArrayList<Plant> plantList, ArrayList<Zebra> zebraList, ArrayList<Lion> lionList, int mapSize) {
         DetectEnemy(lionList);
-        DetectPlant(plantList);
+        if (this.state != 3) {
+            DetectPlant(plantList);
+        }
         //Search for mate if enough energy and not running from lion
 //        if (this.getEnergy() > this.breedEnergy) {
 //            this.state = 2;
 //        }
-        //System.out.println("State: "+this.state);
+        System.out.println("State: "+this.state);
         //System.out.println("Direction: "+this.getDirection());
         switch (this.state) {
             case 0: //wandering phase
@@ -146,20 +148,10 @@ class Zebra extends Animal {
 //                DetectMate(zebraList);
 //                Move(this.targetMate.getX(),this.targetMate.getY(),0);
 //                Mate();
-//            case 3: //running from predator
-//                Move(this.targetLion.getX(),this.targetLion.getY(),1);
+            case 3: //running from predator
+                Move(this.targetLion.getX(),this.targetLion.getY(),0,mapSize);
         }
     }
-
-    //Call every time step during food targeting phase
-//    private void GoEat() {
-//        Vector<Float> foodDir = new Vector<Float>();
-//        foodDir.set(0,this.targetPlant.getX()-this.getX());
-//        foodDir.set(1,this.targetPlant.getY()-this.getY());
-//
-//        this.setDirection(foodDir);
-//        Move();
-//    }
 
     //Handles the eating of plants
     private void Eat(ArrayList<Plant> plantList) {
@@ -172,16 +164,6 @@ class Zebra extends Animal {
             this.PickNewDir();
         }
     }
-
-//   Runs in opposite direction of the target lion
-//    private void Run() {
-//        Vector<Float> enemyDir = new Vector<Float>();
-//        enemyDir.set(0,this.getX()-this.targetLion.getX());
-//        enemyDir.set(1,this.getY()-this.targetLion.getY());
-//
-//        this.setDirection(enemyDir);
-//        Move();
-//    }
 
     //Checks for available mate in proximity and mates
     public void Mate() {
@@ -204,4 +186,25 @@ class Zebra extends Animal {
     public void setBreedEnergy(int breedEnergy) {
         this.breedEnergy = breedEnergy;
     }
+
+//   Runs in opposite direction of the target lion
+//    private void Run() {
+//        Vector<Float> enemyDir = new Vector<Float>();
+//        enemyDir.set(0,this.getX()-this.targetLion.getX());
+//        enemyDir.set(1,this.getY()-this.targetLion.getY());
+//
+//        this.setDirection(enemyDir);
+//        Move();
+//    }
+
+    //Call every time step during food targeting phase
+//    private void GoEat() {
+//        Vector<Float> foodDir = new Vector<Float>();
+//        foodDir.set(0,this.targetPlant.getX()-this.getX());
+//        foodDir.set(1,this.targetPlant.getY()-this.getY());
+//
+//        this.setDirection(foodDir);
+//        Move();
+//    }
+
 }

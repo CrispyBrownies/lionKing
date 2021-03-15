@@ -17,19 +17,11 @@ class Lion extends Animal {
 
     public Lion() { }
 
-//    public Lion(int x, int y, int speed, int environmentSize) {
-//        setName("Lion");
-//        setX(x);
-//        setY(y);
-//        setSpeed(speed);
-//        setEnvironmentSize(environmentSize);
-//    }
-
     public Lion(float x, float y) {
         setName("Lion");
         setEnergy(10000);
-        setSpeed(0.7f);
-        setDetectRange(10);
+        setSpeed(0.2f);
+        setDetectRange(100);
         setWanderDirTimer(WANDERDIRTIMER);
         this.PickNewDir();
     }
@@ -83,8 +75,9 @@ class Lion extends Animal {
         Advance(mapSize);
     }
 
+    //Checks whether targeted zebra is in eating range.
     private void EatZebra(ArrayList<Zebra> zebraList) {
-        if (Equations.EuclDist(targetZebra.getX(),targetZebra.getY(),getX(),getY()) < 0.05) {
+        if (Equations.EuclDist(targetZebra.getX(),targetZebra.getY(),getX(),getY()) < 0.5) {
             zebraList.remove(this.targetZebra);
             this.setEnergy(this.getEnergy()+100);
             this.targetZebra = null;
@@ -115,4 +108,11 @@ class Lion extends Animal {
         return super.getName();
     }
 
+    //    public Lion(int x, int y, int speed, int environmentSize) {
+//        setName("Lion");
+//        setX(x);
+//        setY(y);
+//        setSpeed(speed);
+//        setEnvironmentSize(environmentSize);
+//    }
 }

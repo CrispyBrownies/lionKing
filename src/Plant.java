@@ -7,7 +7,7 @@ class Plant {
     //Plant properties
     private float x;
     private float y;
-    private final int FOODVAL = 10;
+    private final int FOODVAL = 100;
 
     public Plant() { }
 

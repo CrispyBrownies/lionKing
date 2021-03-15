@@ -7,7 +7,7 @@ import java.util.Vector;
 class Animal {
     private String name;
     private float speed;
-    private int energy;
+    private float energy;
     private float detectRange;
 
     private double xdirection;
@@ -24,67 +24,7 @@ class Animal {
 
     private int environmentSize;
 
-    public Animal() {
-
-    }
-
-//    public void newWanderAngle(int a) {
-//        double angle = Math.random()*2*Math.PI;
-//        setXdirection(Math.sin(angle));
-//        setYdirection(Math.cos(angle));
-//    }
-
-//    public void move() {
-//
-//        // walls
-//        // left wall
-//        int newXPosition = (int) (getSpeed()*getXdirection()) + getX();
-//        int newYPosition = (int) (getSpeed()*getYdirection()) + getY();
-//        int d;
-//
-//        if ((getX() == 0 && getXdirection()<0) || (getX()==getEnvironmentSize()-1 && getXdirection()>0)) {
-//            setXdirection(-1*getXdirection());
-//            setX((int) (getSpeed()*getXdirection()) + getX());
-//
-//        }
-//        if ((getY() == 0 && getYdirection()<0) || (getY()==getEnvironmentSize()-1 && getYdirection()>0)) {
-//            setYdirection(-1*getYdirection());
-//            setY((int) (getSpeed()*getYdirection()) + getY());
-//
-//        }
-//
-//        if (newXPosition < 0 && newYPosition < 0) {
-//            setX(0);
-//            setY(0);
-//            return;
-//        } else if (newXPosition > getEnvironmentSize()-1 && newYPosition > getEnvironmentSize()-1) {
-//            setX(getEnvironmentSize()-1);
-//            setY(getEnvironmentSize()-1);
-//            return;
-//        } else if (newXPosition < 0) {
-//            d = getX();
-//            setX(0);
-//            setY((int) (d*getYdirection() + getY()));
-//            return;
-//        } else if (newXPosition > getEnvironmentSize()-1) {
-//            d = getEnvironmentSize()-1-getX();
-//            setX(getEnvironmentSize()-1);
-//            setY((int) (d*getYdirection()) + getY());
-//            return;
-//        } else if (newYPosition < 0) {
-//            d = getY();
-//            setY(0);
-//            setX((int) (d*getXdirection()) + getX());
-//            return;
-//        } else if (newYPosition > getEnvironmentSize()-1) {
-//            d = getEnvironmentSize()-1-getY();
-//            setY(getEnvironmentSize()-1);
-//            setX((int) (d*getXdirection()) + getX());
-//            return;
-//        }
-//        setX(newXPosition);
-//        setY(newYPosition);
-//    }
+    public Animal() { }
 
     //Calculates if next move will be outside the map
     public boolean CheckCollision(int mapSize) {
@@ -127,11 +67,13 @@ class Animal {
         Advance(mapSize);
     }
 
+    //Moves the animal foward in whichever direction they want to travel in
     public void Advance(int mapSize) {
         System.out.println("Direction: "+this.direction);
         System.out.println("Position: "+this.x+" "+this.y);
         System.out.println("Speed: "+this.speed);
-        //this.energy -= (int)Equations.EnergyCost(this.direction);
+        System.out.println("Energy: "+this.energy);
+        this.energy -= Equations.EnergyCost(this.speed);
 
         while (CheckCollision(mapSize)) {
             this.PickNewDir();
@@ -149,7 +91,7 @@ class Animal {
         this.speed = speed;
     }
 
-    public void setEnergy(int energy) {
+    public void setEnergy(float energy) {
         this.energy = energy;
     }
 
@@ -157,7 +99,7 @@ class Animal {
         return detectRange;
     }
 
-    public int getEnergy() {
+    public float getEnergy() {
         return energy;
     }
 
@@ -249,4 +191,63 @@ class Animal {
     public void setEnvironmentSize(int environmentSize) {
         this.environmentSize = environmentSize;
     }
+
+//    public void newWanderAngle(int a) {
+//        double angle = Math.random()*2*Math.PI;
+//        setXdirection(Math.sin(angle));
+//        setYdirection(Math.cos(angle));
+//    }
+
+//    public void move() {
+//
+//        // walls
+//        // left wall
+//        int newXPosition = (int) (getSpeed()*getXdirection()) + getX();
+//        int newYPosition = (int) (getSpeed()*getYdirection()) + getY();
+//        int d;
+//
+//        if ((getX() == 0 && getXdirection()<0) || (getX()==getEnvironmentSize()-1 && getXdirection()>0)) {
+//            setXdirection(-1*getXdirection());
+//            setX((int) (getSpeed()*getXdirection()) + getX());
+//
+//        }
+//        if ((getY() == 0 && getYdirection()<0) || (getY()==getEnvironmentSize()-1 && getYdirection()>0)) {
+//            setYdirection(-1*getYdirection());
+//            setY((int) (getSpeed()*getYdirection()) + getY());
+//
+//        }
+//
+//        if (newXPosition < 0 && newYPosition < 0) {
+//            setX(0);
+//            setY(0);
+//            return;
+//        } else if (newXPosition > getEnvironmentSize()-1 && newYPosition > getEnvironmentSize()-1) {
+//            setX(getEnvironmentSize()-1);
+//            setY(getEnvironmentSize()-1);
+//            return;
+//        } else if (newXPosition < 0) {
+//            d = getX();
+//            setX(0);
+//            setY((int) (d*getYdirection() + getY()));
+//            return;
+//        } else if (newXPosition > getEnvironmentSize()-1) {
+//            d = getEnvironmentSize()-1-getX();
+//            setX(getEnvironmentSize()-1);
+//            setY((int) (d*getYdirection()) + getY());
+//            return;
+//        } else if (newYPosition < 0) {
+//            d = getY();
+//            setY(0);
+//            setX((int) (d*getXdirection()) + getX());
+//            return;
+//        } else if (newYPosition > getEnvironmentSize()-1) {
+//            d = getEnvironmentSize()-1-getY();
+//            setY(getEnvironmentSize()-1);
+//            setX((int) (d*getXdirection()) + getX());
+//            return;
+//        }
+//        setX(newXPosition);
+//        setY(newYPosition);
+//    }
+
 }
