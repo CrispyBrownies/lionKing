@@ -20,7 +20,7 @@ class Lion extends Animal {
     public Lion(float x, float y) {
         setName("Lion");
         setEnergy(10000);
-        setSpeed(0.2f);
+        setSpeed(0.5f);
         setDetectRange(100);
         setWanderDirTimer(WANDERDIRTIMER);
         this.PickNewDir();

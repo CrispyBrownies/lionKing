@@ -15,9 +15,9 @@ import java.lang.Math;
 
 class Simulation {
     
-    private final int PLANTCOUNT = 100;
-    private final int ZEBRACOUNT = 1;
-    private final int LIONCOUNT = 1;
+    private final int PLANTCOUNT = 1000;
+    private final int ZEBRACOUNT = 100;
+    private final int LIONCOUNT = 5;
 
     private final int MAPSIZE = 100;
     private final float MAXSPEED = 0.5f;
