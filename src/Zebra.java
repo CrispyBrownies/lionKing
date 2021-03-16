@@ -30,14 +30,14 @@ class Zebra extends Animal {
 //    public Zebra() {
 //
 //    }
-
-    public Zebra(int x, int y, int speed, int environmentSize) {
-        setName("Zebra");
-        setX(x);
-        setY(y);
-        setSpeed(speed);
-        setEnvironmentSize(environmentSize);
-    }
+//
+//    public Zebra(int x, int y, int speed, int environmentSize) {
+//        setName("Zebra");
+//        setX(x);
+//        setY(y);
+//        setSpeed(speed);
+//        setEnvironmentSize(environmentSize);
+//    }
 
     public Zebra(int x, int y, float speed, float energy, float detectRange, int breedEnergy, int maxWanderDirTimer, int attentionSpan) {
         setName("Zebra");
@@ -150,6 +150,7 @@ class Zebra extends Animal {
 //                Mate();
             case 3: //running from predator
                 Move(this.targetLion.getX(),this.targetLion.getY(),0,mapSize);
+                break;
         }
     }
 
