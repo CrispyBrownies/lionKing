@@ -2,6 +2,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
+import java.lang.reflect.Array;
 import java.nio.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -12,24 +13,27 @@ import static org.lwjgl.system.MemoryUtil.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.lang.Math;
+import java.util.Iterator;
 
 class Simulation {
-    
-    private final int PLANTCOUNT = 0;
-    private final int ZEBRACOUNT = 1;
+
+
+    private final int PLANTCOUNT = 100;
+    private final int ZEBRACOUNT = 10;
     private final int LIONCOUNT = 1;
 
     private final int MAPSIZE = 100;
     private final float MAXSPEED = 0.5f;
     private final float MAXENERGY = 1000f;
     private final int MAXDETECT = 10;
-    private final int MAXBREEDENERGY = 1000;
+    private final int MAXBREEDENERGY = 100;
     private final int MAXATTENTION = 3000;
     private final int MINATTENTION = 100;
     private final int MAXWANDERDIRTIME = 1000;
     private final int MAXWFOODTIMER = 500;
+    private final float MAXBABYENERGY = 500;
     private static boolean RunSim = true;
-    private int spawnFoodTimer = 500;
+    private int spawnFoodTimer = 1;
 
     private ArrayList<Plant> PlantList = new ArrayList<Plant>(PLANTCOUNT);
     private ArrayList<Zebra> ZebraList = new ArrayList<Zebra>(ZEBRACOUNT);
@@ -64,13 +68,21 @@ class Simulation {
                 }
 
                 sim.CheckDeath();
+                ArrayList<Zebra> addZebra = new ArrayList<Zebra>();
                 for (Plant plant: sim.PlantList) {
                     graphics.DrawPlant(plant);
                 }
                 for (Zebra zebra: sim.ZebraList) {
-                    zebra.Update(sim.getPlantList(),sim.getZebraList(),sim.getLionList(),sim.getMAPSIZE());
+                    addZebra = zebra.Update(sim.getPlantList(),sim.getZebraList(),sim.getLionList(),sim.getMAPSIZE());
                     graphics.DrawZebra(zebra);
+                    graphics.DrawDir(zebra);
+                    graphics.DrawRange(zebra);
                 }
+                System.out.println(sim.ZebraList.size());
+                for (Zebra zebra: addZebra) {
+                    sim.ZebraList.add(zebra);
+                }
+                addZebra.clear();
                 for (Lion lion: sim.LionList) {
                     lion.Update(sim.getZebraList(),sim.getMAPSIZE());
                     graphics.DrawLion(lion);
@@ -90,10 +102,6 @@ class Simulation {
         LionList.removeIf(lion -> lion.getEnergy() <= 0);
     }
 
-    public void simulate(Simulation simulation) {
-
-    }
-
     public Simulation() {
 
     }
@@ -105,11 +113,13 @@ class Simulation {
         }
         for (int i = ZEBRACOUNT; i > 0; i--) {
             Zebra newZebra = new Zebra((int)(Math.random()*2*MAPSIZE), (int)(Math.random()*2*MAPSIZE),
-                    (float)(Math.random()*MAXSPEED), (float)Math.random()*MAXENERGY, (float)Math.random()*MAXDETECT, (int)Math.round(Math.random()*MAXBREEDENERGY), (int)Math.round(Math.random()*MAXWANDERDIRTIME), (int)(Math.random()*MAXATTENTION+MINATTENTION));
+                    (float)(Math.random()*MAXSPEED), (float)Math.random()*MAXENERGY,  (float)Math.random()*MAXDETECT, (int)Math.round(Math.random()*MAXBREEDENERGY),(float)Math.random()*MAXBABYENERGY, (int)Math.round(Math.random()*MAXWANDERDIRTIME), (int)(Math.random()*MAXATTENTION+MINATTENTION));
+            newZebra.CheckCollision(getMAPSIZE());
             ZebraList.add(newZebra);
         }
         for (int i = LIONCOUNT; i > 0; i--) {
             Lion newLion = new Lion((float)Math.random()*MAPSIZE, (float)Math.random()*MAPSIZE);
+            newLion.CheckCollision(getMAPSIZE());
             LionList.add(newLion);
         }
     }
@@ -178,6 +188,9 @@ class Simulation {
         ZebraList = zebraList;
     }
 
+//    public void simulate(Simulation simulation) {
+//
+//    }
 
 //        int randomSpeed = (int) (Math.random()*sim.getMAXSPEED());
 //

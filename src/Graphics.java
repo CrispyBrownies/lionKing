@@ -8,6 +8,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import java.nio.*;
+import java.util.Vector;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -89,6 +90,41 @@ public class Graphics {
 
     public long getWindow() {
         return window;
+    }
+
+    public void DrawRange(Zebra zebra) {
+        float x = zebra.getX()/100-1f;
+        float y = zebra.getY()/100-1f;
+        float rad = zebra.getDetectRange()/100f;
+        System.out.println(rad);
+
+        GL11.glColor3f(167f/255f,5f/255f,237f/255f);
+
+        glBegin(GL_LINE_LOOP);
+        for (float i=0; i<2*Math.PI; i+=0.01f) {
+            glVertex2f( x+rad*(float) Math.cos(i),y+rad*(float) Math.sin(i));
+        }
+        glEnd();
+    }
+
+    public void DrawDir(Zebra zebra) {
+        float x = zebra.getX()/100-1f;
+        float y = zebra.getY()/100-1f;
+
+        //System.out.printf("hi");
+        GL11.glColor3f(172f/255f,13f/255f,13f/255f);
+
+        Vector<Float> targetDir = zebra.getTargetDir();
+        //System.out.println("this: "+targetDir);
+
+        float targetX = targetDir.get(0)/100-1f;
+        float targetY = targetDir.get(1)/100-1f;
+
+        glBegin(GL_LINES);
+        glVertex2f(targetX,targetY);
+        glVertex2f(x,y);
+        glEnd();
+
     }
 
     public void DrawZebra(Zebra zebra) {

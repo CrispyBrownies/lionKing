@@ -10,6 +10,8 @@ class Animal {
     private float energy;
     private float detectRange;
 
+    public Vector<Float> targetDir = new Vector<Float>(2);
+
     private double xdirection;
     private double ydirection;
 
@@ -31,9 +33,12 @@ class Animal {
         float nextX = this.x+this.direction.get(0)*this.speed;
         float nextY = this.y+this.direction.get(1)*this.speed;
 
-        System.out.println("Next Pos:  "+nextX+ " "+nextY );
+//        this.targetDir.set(0,nextX*10);
+//        this.targetDir.set(1,nextY*10);
+
+        //System.out.println("Next Pos:  "+targetDir);
         if (nextX > 2*mapSize || nextX < 0 || nextY > 2*mapSize || nextY < 0) {
-            System.out.println("OUT");
+            //System.out.println("OUT");
             return true;
         }
         else {
@@ -45,10 +50,11 @@ class Animal {
     public void PickNewDir() {
         double newAngle = Math.random()*2*Math.PI;
         Vector<Float> moveDir = new Vector<Float>();
-        System.out.println(getSpeed());
+        //System.out.println(getSpeed());
         moveDir.add((float)Math.cos(newAngle));
         moveDir.add((float)Math.sin(newAngle));
         this.direction = moveDir;
+        //this.targetDir = moveDir;
     }
 
     //Handles movement of animal, dir = 1: towards, else: away
@@ -67,20 +73,23 @@ class Animal {
         Advance(mapSize);
     }
 
-    //Moves the animal foward in whichever direction they want to travel in
+    //Moves the animal forward in whichever direction they want to travel in
     public void Advance(int mapSize) {
-        System.out.println("Direction: "+this.direction);
-        System.out.println("Position: "+this.x+" "+this.y);
-        System.out.println("Speed: "+this.speed);
-        System.out.println("Energy: "+this.energy);
+//        System.out.println("Direction: "+this.direction);
+//        System.out.println("Position: "+this.x+" "+this.y);
+//        System.out.println("Speed: "+this.speed);
+//        System.out.println("Energy: "+this.energy);
         this.energy -= Equations.EnergyCost(this.speed);
 
         while (CheckCollision(mapSize)) {
             this.PickNewDir();
         }
-
         this.x += this.direction.get(0)*this.speed;
         this.y += this.direction.get(1)*this.speed;
+    }
+
+    public Vector<Float> getTargetDir() {
+        return targetDir;
     }
 
     public float getSpeed() {
@@ -123,11 +132,11 @@ class Animal {
         return y;
     }
 
-    public void setX(int x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public void setY(int y) {
+    public void setY(float y) {
         this.y = y;
     }
 
@@ -157,7 +166,7 @@ class Animal {
 
     public String toString() {
         return getName() + ": Position = (" + getX() + ", " + getY() + ")," +
-                " Speed = " + (getSpeed()-1) + ", Energy = " + getEnergy() + ", Range = " + getDetectRange();
+                " Speed = " + (getSpeed()) + ", Energy = " + getEnergy() + ", Range = " + getDetectRange();
     }
 
     public double getXdirection() {
@@ -192,7 +201,11 @@ class Animal {
         this.environmentSize = environmentSize;
     }
 
-//    public void newWanderAngle(int a) {
+    public void setTargetDir(Vector<Float> targetDir) {
+        this.targetDir = targetDir;
+    }
+
+    //    public void newWanderAngle(int a) {
 //        double angle = Math.random()*2*Math.PI;
 //        setXdirection(Math.sin(angle));
 //        setYdirection(Math.cos(angle));
