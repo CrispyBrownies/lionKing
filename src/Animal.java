@@ -18,7 +18,8 @@ class Animal {
     private Vector<Float> direction;
     private int wanderDirTimer; //How long until animal picks new direction during wander
     private int maxWanderDirTimer;
-    private int attentionSpan; //How long until animal gives up on target seeking and enter wander
+    private final int MAXATTENTIONSPAN = 500;
+    private int attentionSpan = 500; //How long until animal gives up on target seeking and enter wander
 
     //position coordinates
     private float x;
@@ -26,33 +27,33 @@ class Animal {
 
     private int environmentSize;
 
-    public Animal() { }
+    public Animal() {
+    }
 
     //Calculates if next move will be outside the map
     public boolean CheckCollision(int mapSize) {
-        float nextX = this.x+this.direction.get(0)*this.speed;
-        float nextY = this.y+this.direction.get(1)*this.speed;
+        float nextX = this.x + this.direction.get(0) * this.speed;
+        float nextY = this.y + this.direction.get(1) * this.speed;
 
 //        this.targetDir.set(0,nextX*10);
 //        this.targetDir.set(1,nextY*10);
 
         //System.out.println("Next Pos:  "+targetDir);
-        if (nextX > 2*mapSize || nextX < 0 || nextY > 2*mapSize || nextY < 0) {
+        if (nextX > 2 * mapSize || nextX < 0 || nextY > 2 * mapSize || nextY < 0) {
             //System.out.println("OUT");
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
     //Sets animal's direction to new random direction
     public void PickNewDir() {
-        double newAngle = Math.random()*2*Math.PI;
+        double newAngle = Math.random() * 2 * Math.PI;
         Vector<Float> moveDir = new Vector<Float>();
         //System.out.println(getSpeed());
-        moveDir.add((float)Math.cos(newAngle));
-        moveDir.add((float)Math.sin(newAngle));
+        moveDir.add((float) Math.cos(newAngle));
+        moveDir.add((float) Math.sin(newAngle));
         this.direction = moveDir;
         //this.targetDir = moveDir;
     }
@@ -60,14 +61,13 @@ class Animal {
     //Handles movement of animal, dir = 1: towards, else: away
     public void Move(float targetx, float targety, int dir, int mapSize) {
         Vector<Float> moveDir = new Vector<Float>();
-        float magnitude = Equations.EuclDist(targetx,targety,this.x,this.y);
+        float magnitude = Equations.EuclDist(targetx, targety, this.x, this.y);
         if (dir == 0) {
-            moveDir.add((this.x-targetx)/magnitude);
-            moveDir.add((this.y-targety)/magnitude);
-        }
-        else {
-            moveDir.add((targetx-this.x)/magnitude);
-            moveDir.add((targety-this.y)/magnitude);
+            moveDir.add((this.x - targetx) / magnitude);
+            moveDir.add((this.y - targety) / magnitude);
+        } else {
+            moveDir.add((targetx - this.x) / magnitude);
+            moveDir.add((targety - this.y) / magnitude);
         }
         this.direction = moveDir;
         Advance(mapSize);
@@ -84,8 +84,12 @@ class Animal {
         while (CheckCollision(mapSize)) {
             this.PickNewDir();
         }
-        this.x += this.direction.get(0)*this.speed;
-        this.y += this.direction.get(1)*this.speed;
+        this.x += this.direction.get(0) * this.speed;
+        this.y += this.direction.get(1) * this.speed;
+    }
+
+    public int getMAXATTENTIONSPAN() {
+        return MAXATTENTIONSPAN;
     }
 
     public Vector<Float> getTargetDir() {
@@ -204,8 +208,10 @@ class Animal {
     public void setTargetDir(Vector<Float> targetDir) {
         this.targetDir = targetDir;
     }
-
-    //    public void newWanderAngle(int a) {
+}
+//    CODE GRAVEYARD
+//=================================================================================================
+//    public void newWanderAngle(int a) {
 //        double angle = Math.random()*2*Math.PI;
 //        setXdirection(Math.sin(angle));
 //        setYdirection(Math.cos(angle));
@@ -262,5 +268,3 @@ class Animal {
 //        setX(newXPosition);
 //        setY(newYPosition);
 //    }
-
-}

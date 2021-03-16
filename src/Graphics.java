@@ -20,13 +20,13 @@ public class Graphics {
 
     private long window;
 
-    public Graphics() {
+    public Graphics(int mapSize) {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if ( !glfwInit() )
+        if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
 
         // Configure GLFW
@@ -35,18 +35,18 @@ public class Graphics {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(1000, 1000, "Lion King", NULL, NULL);
-        if ( window == NULL )
+        window = glfwCreateWindow(10 * mapSize, 10 * mapSize, "Lion King", NULL, NULL);
+        if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
         });
 
         // Get the thread stack and push a new frame
-        try ( MemoryStack stack = stackPush() ) {
+        try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -93,82 +93,93 @@ public class Graphics {
     }
 
     public void DrawRange(Zebra zebra) {
-        float x = zebra.getX()/100-1f;
-        float y = zebra.getY()/100-1f;
-        float rad = zebra.getDetectRange()/100f;
-        System.out.println(rad);
+        float x = zebra.getX() / 100 - 1f;
+        float y = zebra.getY() / 100 - 1f;
+        float rad = zebra.getDetectRange() / 100f;
+        //System.out.println(rad);
 
-        GL11.glColor3f(167f/255f,5f/255f,237f/255f);
+        GL11.glColor3f(167f / 255f, 5f / 255f, 237f / 255f);
 
         glBegin(GL_LINE_LOOP);
-        for (float i=0; i<2*Math.PI; i+=0.01f) {
-            glVertex2f( x+rad*(float) Math.cos(i),y+rad*(float) Math.sin(i));
+        for (float i = 0; i < 2 * Math.PI; i += 0.01f) {
+            glVertex2f(x + rad * (float) Math.cos(i), y + rad * (float) Math.sin(i));
         }
         glEnd();
     }
 
     public void DrawDir(Zebra zebra) {
-        float x = zebra.getX()/100-1f;
-        float y = zebra.getY()/100-1f;
+        float x = zebra.getX() / 100 - 1f;
+        float y = zebra.getY() / 100 - 1f;
 
         //System.out.printf("hi");
-        GL11.glColor3f(172f/255f,13f/255f,13f/255f);
+        GL11.glColor3f(172f / 255f, 13f / 255f, 13f / 255f);
 
         Vector<Float> targetDir = zebra.getTargetDir();
         //System.out.println("this: "+targetDir);
 
-        float targetX = targetDir.get(0)/100-1f;
-        float targetY = targetDir.get(1)/100-1f;
+        float targetX = targetDir.get(0) / 100 - 1f;
+        float targetY = targetDir.get(1) / 100 - 1f;
 
         glBegin(GL_LINES);
-        glVertex2f(targetX,targetY);
-        glVertex2f(x,y);
+        glVertex2f(targetX, targetY);
+        glVertex2f(x, y);
         glEnd();
 
     }
 
     public void DrawZebra(Zebra zebra) {
-        GL11.glColor3f(170f/255f,170f/255f,170f/255f);
+        if (zebra.isTargeted()) {
+            GL11.glColor3f(33f / 255f, 248f / 255f, 255f / 255f);
+        } else {
+            GL11.glColor3f(170f / 255f, 170f / 255f, 170f / 255f);
+        }
 
-        float x = zebra.getX()/100-1f;
-        float y = zebra.getY()/100-1f;
+        float x = zebra.getX() / 100 - 1f;
+        float y = zebra.getY() / 100 - 1f;
 
         glBegin(GL_QUADS);
-        glVertex2f(x-1f/100f, y+1f/100f);
-        glVertex2f(x+1f/100f, y+1f/100f);
-        glVertex2f(x+1f/100f, y-1f/100f);
-        glVertex2f(x-1f/100f, y-1f/100f);
+        glVertex2f(x - 1f / 100f, y + 1f / 100f);
+        glVertex2f(x + 1f / 100f, y + 1f / 100f);
+        glVertex2f(x + 1f / 100f, y - 1f / 100f);
+        glVertex2f(x - 1f / 100f, y - 1f / 100f);
         glEnd();
     }
 
     public void DrawLion(Lion lion) {
-        GL11.glColor3f(243f/255f,105f/255f,25f/255f);
+        GL11.glColor3f(243f / 255f, 105f / 255f, 25f / 255f);
 
-        float x = lion.getX()/100-1f;
-        float y = lion.getY()/100-1f;
+        float x = lion.getX() / 100 - 1f;
+        float y = lion.getY() / 100 - 1f;
 
         glBegin(GL_QUADS);
-        glVertex2f(x-1f/100f, y+1f/100f);
-        glVertex2f(x+1f/100f, y+1f/100f);
-        glVertex2f(x+1f/100f, y-1f/100f);
-        glVertex2f(x-1f/100f, y-1f/100f);
+        glVertex2f(x - 1f / 100f, y + 1f / 100f);
+        glVertex2f(x + 1f / 100f, y + 1f / 100f);
+        glVertex2f(x + 1f / 100f, y - 1f / 100f);
+        glVertex2f(x - 1f / 100f, y - 1f / 100f);
         glEnd();
     }
 
     public void DrawPlant(Plant plant) {
-        GL11.glColor3f(10f/255f,153f/255f,35f/255f);
+        if (plant.isTargeted()) {
+            GL11.glColor3f(17f / 255f, 54f / 255f, 240f / 255f);
+        } else {
+            GL11.glColor3f(10f / 255f, 153f / 255f, 35f / 255f);
+        }
 
-        float x = plant.getX()/100-1f;
-        float y = plant.getY()/100-1f;
+        float x = plant.getX() / 100 - 1f;
+        float y = plant.getY() / 100 - 1f;
 
         glBegin(GL_QUADS);
-        glVertex2f(x-1f/100f, y+1f/100f);
-        glVertex2f(x+1f/100f, y+1f/100f);
-        glVertex2f(x+1f/100f, y-1f/100f);
-        glVertex2f(x-1f/100f, y-1f/100f);
+        glVertex2f(x - 1f / 100f, y + 1f / 100f);
+        glVertex2f(x + 1f / 100f, y + 1f / 100f);
+        glVertex2f(x + 1f / 100f, y - 1f / 100f);
+        glVertex2f(x - 1f / 100f, y - 1f / 100f);
         glEnd();
     }
+}
 
+//    CODE GRAVEYARD
+//============================================================================
 //    public void run() {
 //        //System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 //
@@ -263,4 +274,3 @@ public class Graphics {
 //
 //        }
 //    }
-}

@@ -14,16 +14,18 @@ class Lion extends Animal {
     private Zebra targetZebra;
     private final int WANDERDIRTIMER = 1000;
     private final int MAXATTENTIONSPAN = 5000;
+    private boolean targeted;
 
     public Lion() { }
 
     public Lion(float x, float y) {
         setName("Lion");
         setEnergy(10000);
-        setSpeed(0.2f);
-        setDetectRange(100);
+        setSpeed(0.3f);
+        setDetectRange(50);
         setWanderDirTimer(WANDERDIRTIMER);
         this.PickNewDir();
+        this.targeted = false;
     }
 
     //Checks for nearby zebras and selects closest one as target
@@ -78,10 +80,19 @@ class Lion extends Animal {
     //Checks whether targeted zebra is in eating range.
     private void EatZebra(ArrayList<Zebra> zebraList) {
         if (Equations.EuclDist(targetZebra.getX(),targetZebra.getY(),getX(),getY()) < 0.5) {
+            targetZebra.getTargetPlant().setTargeted(false);
             zebraList.remove(this.targetZebra);
             this.setEnergy(this.getEnergy()+100);
             this.targetZebra = null;
         }
+    }
+
+    public void setTargeted(boolean targeted) {
+        this.targeted = targeted;
+    }
+
+    public boolean isTargeted() {
+        return targeted;
     }
 
     public void setEnergy(int energy) {

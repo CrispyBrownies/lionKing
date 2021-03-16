@@ -19,21 +19,22 @@ class Simulation {
 
 
     private final int PLANTCOUNT = 100;
-    private final int ZEBRACOUNT = 10;
+    private final int ZEBRACOUNT = 1;
     private final int LIONCOUNT = 1;
 
     private final int MAPSIZE = 100;
     private final float MAXSPEED = 0.5f;
-    private final float MAXENERGY = 1000f;
-    private final int MAXDETECT = 10;
+    private final float MAXENERGY = 10000f;
+    private final int MAXDETECT = 100;
     private final int MAXBREEDENERGY = 100;
     private final int MAXATTENTION = 3000;
     private final int MINATTENTION = 100;
     private final int MAXWANDERDIRTIME = 1000;
-    private final int MAXWFOODTIMER = 500;
     private final float MAXBABYENERGY = 500;
     private static boolean RunSim = true;
+    private final int MAXWFOODTIMER = 100;
     private int spawnFoodTimer = 1;
+    private int plantID = 0;
 
     private ArrayList<Plant> PlantList = new ArrayList<Plant>(PLANTCOUNT);
     private ArrayList<Zebra> ZebraList = new ArrayList<Zebra>(ZEBRACOUNT);
@@ -41,12 +42,12 @@ class Simulation {
 
     public static void main(String[] args) throws IOException {
 
-        Graphics graphics = new Graphics();
         Simulation sim = new Simulation();
+        Graphics graphics = new Graphics(sim.getMAPSIZE());
 
         sim.CreateSim();
 
-        while(RunSim) {
+        while (RunSim) {
             // This line is critical for LWJGL's interoperation with GLFW's
             // OpenGL context, or any context that is managed externally.
             // LWJGL detects the context that is current in the current thread,
@@ -55,36 +56,37 @@ class Simulation {
             GL.createCapabilities();
 
             // Set the clear color
-            glClearColor(113f/255f, 245f/255f, 40f/255f, 0.0f);
+            glClearColor(113f / 255f, 245f / 255f, 40f / 255f, 0.0f);
 
             // Run the rendering loop until the user has attempted to close
             // the window or has pressed the ESCAPE key.
-            while ( !glfwWindowShouldClose(graphics.getWindow()) ) {
+            while (!glfwWindowShouldClose(graphics.getWindow())) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
                 //System.out.println(sim.spawnFoodTimer);
                 if (sim.spawnFoodTimer == 0) {
                     sim.spawnFoodTimer = sim.MAXWFOODTIMER;
-                    sim.PlantList.add(new Plant((int) (Math.random()*sim.getMAPSIZE()), (int) (Math.random()*sim.getMAPSIZE())));
+                    sim.plantID++;
+                    sim.PlantList.add(new Plant((int) (Math.random() * 2 * sim.getMAPSIZE()), (int) (Math.random() * 2 * sim.getMAPSIZE()), sim.plantID));
                 }
 
                 sim.CheckDeath();
                 ArrayList<Zebra> addZebra = new ArrayList<Zebra>();
-                for (Plant plant: sim.PlantList) {
+                for (Plant plant : sim.PlantList) {
                     graphics.DrawPlant(plant);
                 }
-                for (Zebra zebra: sim.ZebraList) {
-                    addZebra = zebra.Update(sim.getPlantList(),sim.getZebraList(),sim.getLionList(),sim.getMAPSIZE());
+                for (Zebra zebra : sim.ZebraList) {
+                    addZebra = zebra.Update(sim.getPlantList(), sim.getZebraList(), sim.getLionList(), sim.getMAPSIZE());
                     graphics.DrawZebra(zebra);
                     graphics.DrawDir(zebra);
                     graphics.DrawRange(zebra);
                 }
                 System.out.println(sim.ZebraList.size());
-                for (Zebra zebra: addZebra) {
+                for (Zebra zebra : addZebra) {
                     sim.ZebraList.add(zebra);
                 }
                 addZebra.clear();
-                for (Lion lion: sim.LionList) {
-                    lion.Update(sim.getZebraList(),sim.getMAPSIZE());
+                for (Lion lion : sim.LionList) {
+                    lion.Update(sim.getZebraList(), sim.getMAPSIZE());
                     graphics.DrawLion(lion);
                 }
                 sim.spawnFoodTimer -= 1;
@@ -108,17 +110,18 @@ class Simulation {
 
     private void CreateSim() {
         for (int i = PLANTCOUNT; i > 0; i--) {
-            Plant newPlant = new Plant((int) (Math.random()*2*MAPSIZE), (int) (Math.random()*2*MAPSIZE));
+            plantID++;
+            Plant newPlant = new Plant((int) (Math.random() * 2 * MAPSIZE), (int) (Math.random() * 2 * MAPSIZE), plantID);
             PlantList.add(newPlant);
         }
         for (int i = ZEBRACOUNT; i > 0; i--) {
-            Zebra newZebra = new Zebra((int)(Math.random()*2*MAPSIZE), (int)(Math.random()*2*MAPSIZE),
-                    (float)(Math.random()*MAXSPEED), (float)Math.random()*MAXENERGY,  (float)Math.random()*MAXDETECT, (int)Math.round(Math.random()*MAXBREEDENERGY),(float)Math.random()*MAXBABYENERGY, (int)Math.round(Math.random()*MAXWANDERDIRTIME), (int)(Math.random()*MAXATTENTION+MINATTENTION));
+            Zebra newZebra = new Zebra((int) (Math.random() * 2 * MAPSIZE), (int) (Math.random() * 2 * MAPSIZE),
+                    (float) (Math.random() * MAXSPEED), (float) Math.random() * MAXENERGY, (float) Math.random() * MAXDETECT, (int) Math.round(Math.random() * MAXBREEDENERGY), (float) Math.random() * MAXBABYENERGY, (int) Math.round(Math.random() * MAXWANDERDIRTIME), (int) (Math.random() * MAXATTENTION + MINATTENTION));
             newZebra.CheckCollision(getMAPSIZE());
             ZebraList.add(newZebra);
         }
         for (int i = LIONCOUNT; i > 0; i--) {
-            Lion newLion = new Lion((float)Math.random()*MAPSIZE, (float)Math.random()*MAPSIZE);
+            Lion newLion = new Lion((float) Math.random() * MAPSIZE, (float) Math.random() * MAPSIZE);
             newLion.CheckCollision(getMAPSIZE());
             LionList.add(newLion);
         }
@@ -187,7 +190,10 @@ class Simulation {
     public void setZebraList(ArrayList<Zebra> zebraList) {
         ZebraList = zebraList;
     }
+}
 
+//    CODE GRAVEYARD
+//=================================================================================================
 //    public void simulate(Simulation simulation) {
 //
 //    }
@@ -252,4 +258,3 @@ class Simulation {
 //
 //        }
 
-}
