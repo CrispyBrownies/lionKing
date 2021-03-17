@@ -68,7 +68,9 @@ class Lion extends Animal {
     //Checks whether targeted zebra is in eating range.
     private void EatZebra(ArrayList<Zebra> zebraList) {
         if (Equations.EuclDist(targetZebra.getX(),targetZebra.getY(),getX(),getY()) < 0.5) {
-            targetZebra.getTargetPlant().setTargeted(false);
+            if (targetZebra.getTargetPlant() != null) {
+                targetZebra.getTargetPlant().setTargeted(false);
+            }
             zebraList.remove(this.targetZebra);
             this.setEnergy(this.getEnergy()+100);
             this.targetZebra = null;
