@@ -19,7 +19,7 @@ class Simulation {
 
 
     private final int PLANTCOUNT = 100;
-    private final int ZEBRACOUNT = 1;
+    private final int ZEBRACOUNT = 20;
     private final int LIONCOUNT = 1;
 
     private final int MAPSIZE = 100;
