@@ -18,7 +18,7 @@ import java.util.Iterator;
 class Simulation {
 
 
-    private final int PLANTCOUNT = 100;
+    private final int PLANTCOUNT = 0;
     private final int ZEBRACOUNT = 1;
     private final int LIONCOUNT = 1;
 
@@ -32,7 +32,7 @@ class Simulation {
     private final int MAXWANDERDIRTIME = 1000;
     private final float MAXBABYENERGY = 500;
     private static boolean RunSim = true;
-    private final int MAXWFOODTIMER = 100;
+    private final int MAXWFOODTIMER = 10000;
     private int spawnFoodTimer = 1;
     private int plantID = 0;
 
@@ -81,9 +81,7 @@ class Simulation {
                     graphics.DrawRange(zebra);
                 }
                 System.out.println(sim.ZebraList.size());
-                for (Zebra zebra : addZebra) {
-                    sim.ZebraList.add(zebra);
-                }
+                sim.ZebraList.addAll(addZebra);
                 addZebra.clear();
                 for (Lion lion : sim.LionList) {
                     lion.Update(sim.getZebraList(), sim.getMAPSIZE());
@@ -109,14 +107,12 @@ class Simulation {
     }
 
     private void CreateSim() {
-        for (int i = PLANTCOUNT; i > 0; i--) {
-            plantID++;
-            Plant newPlant = new Plant((int) (Math.random() * 2 * MAPSIZE), (int) (Math.random() * 2 * MAPSIZE), plantID);
-            PlantList.add(newPlant);
-        }
         for (int i = ZEBRACOUNT; i > 0; i--) {
             Zebra newZebra = new Zebra((int) (Math.random() * 2 * MAPSIZE), (int) (Math.random() * 2 * MAPSIZE),
-                    (float) (Math.random() * MAXSPEED), (float) Math.random() * MAXENERGY, (float) Math.random() * MAXDETECT, (int) Math.round(Math.random() * MAXBREEDENERGY), (float) Math.random() * MAXBABYENERGY, (int) Math.round(Math.random() * MAXWANDERDIRTIME), (int) (Math.random() * MAXATTENTION + MINATTENTION));
+                    (float) (Math.random() * MAXSPEED), (float) Math.random() * MAXENERGY,
+                    (float) Math.random() * MAXDETECT, (int) Math.round(Math.random() * MAXBREEDENERGY),
+                    (float) Math.random() * MAXBABYENERGY, (int) Math.round(Math.random() * MAXWANDERDIRTIME),
+                    (int) (Math.random() * MAXATTENTION + MINATTENTION));
             newZebra.CheckCollision(getMAPSIZE());
             ZebraList.add(newZebra);
         }
@@ -126,6 +122,9 @@ class Simulation {
             LionList.add(newLion);
         }
     }
+
+
+
 
     public ArrayList<Lion> getLionList() {
         return LionList;
@@ -178,6 +177,8 @@ class Simulation {
     public int getZEBRACOUNT() {
         return ZEBRACOUNT;
     }
+
+
 
     public void setLionList(ArrayList<Lion> lionList) {
         LionList = lionList;

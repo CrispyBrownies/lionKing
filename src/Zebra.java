@@ -14,7 +14,7 @@ class Zebra extends Animal {
     private int passion; //How willing the zebra is to mate than to run. (innate)
     private int excitement;
     private int breedTimer = 0;
-    private int maxBreedTimer = 500;
+    private final int maxBreedTimer = 500;
     private boolean targeted;
 
     private Plant targetPlant;
@@ -39,10 +39,7 @@ class Zebra extends Animal {
         if (babyEnergy > breedEnergy) {babyEnergy = breedEnergy;};
         setBabyEnergy(babyEnergy);
         this.PickNewDir();
-        Vector<Float> newDir = new Vector<Float>();
-        newDir.add(0f);
-        newDir.add(0f);
-        this.setTargetDir(newDir);
+        this.setTargetDir(toVector(0f,0f));
     }
 
     //Searches for plants in detection range, sets target plant to nearest plant
@@ -81,17 +78,17 @@ class Zebra extends Animal {
     private void StateManager() {
         if (this.targetLion != null) {
             this.state = 3;
-            this.SetTargetDir(this.targetLion.getX(),this.targetLion.getY());
+            this.setTargetDir(toVector(targetLion.getX(),targetLion.getY()));
         }
         else {
             if (this.targetMate != null) {
                 this.state = 2;
-                this.SetTargetDir(this.targetMate.getX(),this.targetMate.getY());
+                this.setTargetDir(toVector(targetMate.getX(), targetMate.getY()));
             }
             else {
                 if (this.targetPlant != null) {
                     this.state = 1;
-                    this.SetTargetDir(this.targetPlant.getX(),this.targetPlant.getY());
+                    this.setTargetDir(toVector(targetPlant.getX(), targetPlant.getY()));
                 } else {
                     this.state = 0;
                 }
@@ -149,13 +146,6 @@ class Zebra extends Animal {
             float minDist = Collections.min(distances);
             this.targetLion = lionMap.get(minDist);
         }
-    }
-
-    private void SetTargetDir(float targetx, float targety) {
-        Vector<Float> newDirVect = new Vector<Float>();
-        newDirVect.add(targetx);
-        newDirVect.add(targety);
-        this.setTargetDir(newDirVect);
     }
 
     //Searches for nearby enemies within detection range, sets nearest lion to target lion
@@ -226,7 +216,7 @@ class Zebra extends Animal {
     }
 
     //Checks for available mate in proximity and mates
-    public Zebra Mate() {
+    private Zebra Mate() {
         Zebra baby = new Zebra();
         float distBetween = Equations.EuclDist(this.targetMate.getX(),this.targetMate.getY(),getX(),getY());
         float prevSpeed = this.getSpeed();
@@ -255,24 +245,26 @@ class Zebra extends Animal {
         return baby;
     }
 
-    //Call every time step during wander phase
-    private void Wander(int mapSize) {
-        if (this.getWanderDirTimer() == 0) {
-            this.setWanderDirTimer(this.getMaxWanderDirTimer());
-            this.PickNewDir();
-        }
-        else {
-            this.setWanderDirTimer(this.getWanderDirTimer()-1);
-        }
-        float nextX = this.getX()+this.getDirection().get(0)*this.getSpeed()*100f;
-        float nextY = this.getY()+this.getDirection().get(1)*this.getSpeed()*100f;
-        this.SetTargetDir(nextX,nextY);
-        Advance(mapSize);
+
+
+    public int getState() {
+        return state;
+    }
+
+    public float getBreedEnergy() {
+        return breedEnergy;
+    }
+
+    public float getBabyEnergy() {
+        return babyEnergy;
     }
 
     public Plant getTargetPlant() {
         return targetPlant;
     }
+
+
+
 
     public void setTargetPlant(Plant targetPlant) {
         this.targetPlant = targetPlant;
@@ -294,17 +286,7 @@ class Zebra extends Animal {
         this.babyEnergy = babyEnergy;
     }
 
-    public int getState() {
-        return state;
-    }
 
-    public float getBreedEnergy() {
-        return breedEnergy;
-    }
-
-    public float getBabyEnergy() {
-        return babyEnergy;
-    }
 }
 
 //   CODE GRAVEYARD

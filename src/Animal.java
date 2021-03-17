@@ -39,12 +39,8 @@ class Animal {
 //        this.targetDir.set(1,nextY*10);
 
         //System.out.println("Next Pos:  "+targetDir);
-        if (nextX > 2 * mapSize || nextX < 0 || nextY > 2 * mapSize || nextY < 0) {
-            //System.out.println("OUT");
-            return true;
-        } else {
-            return false;
-        }
+        //System.out.println("OUT");
+        return nextX > 2 * mapSize || nextX < 0 || nextY > 2 * mapSize || nextY < 0;
     }
 
     //Sets animal's direction to new random direction
@@ -58,16 +54,32 @@ class Animal {
         //this.targetDir = moveDir;
     }
 
+    //Call every time step during wander phase
+    public void Wander(int mapSize) {
+        if (this.getWanderDirTimer() == 0) {
+            this.setWanderDirTimer(this.getMaxWanderDirTimer());
+            this.PickNewDir();
+        }
+        else {
+            this.setWanderDirTimer(this.getWanderDirTimer()-1);
+        }
+        float nextX = this.getX()+this.getDirection().get(0)*this.getSpeed()*100f;
+        float nextY = this.getY()+this.getDirection().get(1)*this.getSpeed()*100f;
+        this.setTargetDir(toVector(nextX,nextY));
+        Advance(mapSize);
+    }
+
+
     //Handles movement of animal, dir = 1: towards, else: away
-    public void Move(float targetx, float targety, int dir, int mapSize) {
+    public void Move(float targetX, float targetY, int dir, int mapSize) {
         Vector<Float> moveDir = new Vector<Float>();
-        float magnitude = Equations.EuclDist(targetx, targety, this.x, this.y);
+        float magnitude = Equations.EuclDist(targetX, targetY, this.x, this.y);
         if (dir == 0) {
-            moveDir.add((this.x - targetx) / magnitude);
-            moveDir.add((this.y - targety) / magnitude);
+            moveDir.add((this.x - targetX) / magnitude);
+            moveDir.add((this.y - targetY) / magnitude);
         } else {
-            moveDir.add((targetx - this.x) / magnitude);
-            moveDir.add((targety - this.y) / magnitude);
+            moveDir.add((targetX - this.x) / magnitude);
+            moveDir.add((targetY - this.y) / magnitude);
         }
         this.direction = moveDir;
         Advance(mapSize);
@@ -88,6 +100,16 @@ class Animal {
         this.y += this.direction.get(1) * this.speed;
     }
 
+    public Vector<Float> toVector(float x, float y) {
+        Vector<Float> newDirVect = new Vector<Float>();
+        newDirVect.add(x);
+        newDirVect.add(y);
+        return newDirVect;
+    }
+
+
+
+
     public int getMAXATTENTIONSPAN() {
         return MAXATTENTIONSPAN;
     }
@@ -100,14 +122,6 @@ class Animal {
         return speed;
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
-
-    public void setEnergy(float energy) {
-        this.energy = energy;
-    }
-
     public float getDetectRange() {
         return detectRange;
     }
@@ -116,16 +130,8 @@ class Animal {
         return energy;
     }
 
-    public void setDetectRange(float detectRange) {
-        this.detectRange = detectRange;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public float getX() {
@@ -134,6 +140,52 @@ class Animal {
 
     public float getY() {
         return y;
+    }
+
+    public int getWanderDirTimer() {
+        return wanderDirTimer;
+    }
+
+    public int getAttentionSpan() {
+        return attentionSpan;
+    }
+
+    public Vector<Float> getDirection() {
+        return direction;
+    }
+
+    public double getXdirection() {
+        return xdirection;
+    }
+
+    public double getYdirection() {
+        return ydirection;
+    }
+
+    public int getMaxWanderDirTimer() {
+        return maxWanderDirTimer;
+    }
+
+    public int getEnvironmentSize() {
+        return environmentSize;
+    }
+
+
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public void setEnergy(float energy) {
+        this.energy = energy;
+    }
+
+    public void setDirection(Vector<Float> direction) {
+        this.direction = direction;
+    }
+
+    public void setDetectRange(float detectRange) {
+        this.detectRange = detectRange;
     }
 
     public void setX(float x) {
@@ -148,37 +200,12 @@ class Animal {
         this.wanderDirTimer = wanderDirTimer;
     }
 
-    public int getWanderDirTimer() {
-        return wanderDirTimer;
-    }
-
     public void setAttentionSpan(int attentionSpan) {
         this.attentionSpan = attentionSpan;
     }
 
-    public int getAttentionSpan() {
-        return attentionSpan;
-    }
-
-    public Vector<Float> getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Vector<Float> direction) {
-        this.direction = direction;
-    }
-
-    public String toString() {
-        return getName() + ": Position = (" + getX() + ", " + getY() + ")," +
-                " Speed = " + (getSpeed()) + ", Energy = " + getEnergy() + ", Range = " + getDetectRange();
-    }
-
-    public double getXdirection() {
-        return xdirection;
-    }
-
-    public double getYdirection() {
-        return ydirection;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setXdirection(double xdirection) {
@@ -193,14 +220,6 @@ class Animal {
         this.maxWanderDirTimer = maxWanderDirTimer;
     }
 
-    public int getMaxWanderDirTimer() {
-        return maxWanderDirTimer;
-    }
-
-    public int getEnvironmentSize() {
-        return environmentSize;
-    }
-
     public void setEnvironmentSize(int environmentSize) {
         this.environmentSize = environmentSize;
     }
@@ -208,6 +227,13 @@ class Animal {
     public void setTargetDir(Vector<Float> targetDir) {
         this.targetDir = targetDir;
     }
+
+
+    public String toString() {
+        return getName() + ": Position = (" + getX() + ", " + getY() + ")," +
+                " Speed = " + (getSpeed()) + ", Energy = " + getEnergy() + ", Range = " + getDetectRange();
+    }
+
 }
 //    CODE GRAVEYARD
 //=================================================================================================

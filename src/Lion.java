@@ -64,18 +64,6 @@ class Lion extends Animal {
         }
     }
 
-    //Call every time step during wander phase
-    private void Wander(int mapSize) {
-        //System.out.println("Wander Timer: "+this.getWanderDirTimer());
-        if (this.getWanderDirTimer() == 0) {
-            this.setWanderDirTimer(this.WANDERDIRTIMER);
-            this.PickNewDir();
-        }
-        else {
-            this.setWanderDirTimer(this.getWanderDirTimer()-1);
-        }
-        Advance(mapSize);
-    }
 
     //Checks whether targeted zebra is in eating range.
     private void EatZebra(ArrayList<Zebra> zebraList) {

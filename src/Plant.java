@@ -17,29 +17,11 @@ class Plant {
         setId(id);
         setX(x);
         setY(y);
-
     }
 
-    @Override
-    public String toString() {
-        return "Plant{" +
-                "x=" + x +
-                ", y=" + y +
-                ", FOODVAL=" + FOODVAL +
-                ", id=" + id +
-                '}';
-    }
 
     public boolean isTargeted() {
         return targeted;
-    }
-
-    public void setTargeted(boolean targeted) {
-        this.targeted = targeted;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getId() {
@@ -54,6 +36,11 @@ class Plant {
         return y;
     }
 
+    public int getFOODVAL() {
+        return FOODVAL;
+    }
+
+
     public void setX(float x) {
         this.x = x;
     }
@@ -62,7 +49,20 @@ class Plant {
         this.y = y;
     }
 
-    public int getFOODVAL() {
-        return FOODVAL;
+    public void setTargeted(boolean targeted) {
+        this.targeted = targeted;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String toString() {
+        return "Plant{" +
+                "x=" + x +
+                ", y=" + y +
+                ", FOODVAL=" + FOODVAL +
+                ", id=" + id +
+                '}';
     }
 }
