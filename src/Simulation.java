@@ -18,9 +18,9 @@ import java.util.Iterator;
 class Simulation {
 
 
-    private final int PLANTCOUNT = 0;
-    private final int ZEBRACOUNT = 1;
-    private final int LIONCOUNT = 1;
+    private final int PLANTCOUNT = 100;
+    private final int ZEBRACOUNT = 100;
+    private final int LIONCOUNT = 2;
 
     private final int MAPSIZE = 100;
     private final float MAXSPEED = 0.5f;
@@ -34,7 +34,6 @@ class Simulation {
     private static boolean RunSim = true;
     private final int MAXWFOODTIMER = 10000;
     private int spawnFoodTimer = 1;
-    private int plantID = 0;
 
     private ArrayList<Plant> PlantList = new ArrayList<Plant>(PLANTCOUNT);
     private ArrayList<Zebra> ZebraList = new ArrayList<Zebra>(ZEBRACOUNT);
@@ -65,8 +64,7 @@ class Simulation {
                 //System.out.println(sim.spawnFoodTimer);
                 if (sim.spawnFoodTimer == 0) {
                     sim.spawnFoodTimer = sim.MAXWFOODTIMER;
-                    sim.plantID++;
-                    sim.PlantList.add(new Plant((int) (Math.random() * 2 * sim.getMAPSIZE()), (int) (Math.random() * 2 * sim.getMAPSIZE()), sim.plantID));
+                    sim.PlantList.add(new Plant((int) (Math.random() * 2 * sim.getMAPSIZE()), (int) (Math.random() * 2 * sim.getMAPSIZE())));
                 }
 
                 sim.CheckDeath();
@@ -80,6 +78,7 @@ class Simulation {
                     graphics.DrawDir(zebra);
                     graphics.DrawRange(zebra);
                 }
+
                 System.out.println(sim.ZebraList.size());
                 sim.ZebraList.addAll(addZebra);
                 addZebra.clear();

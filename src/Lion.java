@@ -11,10 +11,13 @@ import java.util.Set;
 class Lion extends Animal {
 
     private final String name = "Lion";
+    private int id;
+
     private Zebra targetZebra;
     private final int WANDERDIRTIMER = 1000;
     private final int MAXATTENTIONSPAN = 5000;
     private boolean targeted;
+    private static int counter=1;
 
     public Lion() { }
 
@@ -26,6 +29,7 @@ class Lion extends Animal {
         setWanderDirTimer(WANDERDIRTIMER);
         this.PickNewDir();
         this.targeted = false;
+        this.id = counter++;
     }
 
     //Checks for nearby zebras and selects closest one as target
@@ -77,6 +81,19 @@ class Lion extends Animal {
         }
     }
 
+
+    public float getSpeed() {
+        return super.getSpeed();
+    }
+
+    public String getName() {
+        return super.getName();
+    }
+
+    public int getId() {
+        return id;
+    }
+
     public void setTargeted(boolean targeted) {
         this.targeted = targeted;
     }
@@ -101,12 +118,8 @@ class Lion extends Animal {
         super.setSpeed(speed);
     }
 
-    public float getSpeed() {
-        return super.getSpeed();
-    }
-
-    public String getName() {
-        return super.getName();
+    public void setId(int id) {
+        this.id = id;
     }
 
     //    public Lion(int x, int y, int speed, int environmentSize) {

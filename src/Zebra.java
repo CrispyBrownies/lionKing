@@ -7,6 +7,9 @@ import java.util.*;
 class Zebra extends Animal {
 
     private final String name = "Zebra";
+    private int id;
+
+    private static int counter = 1;
 
     private float breedEnergy; //Energy required to make baby
     private float babyEnergy; //How much energy given to baby
@@ -40,6 +43,7 @@ class Zebra extends Animal {
         setBabyEnergy(babyEnergy);
         this.PickNewDir();
         this.setTargetDir(toVector(0f,0f));
+        this.id = counter++;
     }
 
     //Searches for plants in detection range, sets target plant to nearest plant
@@ -263,8 +267,9 @@ class Zebra extends Animal {
         return targetPlant;
     }
 
-
-
+    public int getId() {
+        return id;
+    }
 
     public void setTargetPlant(Plant targetPlant) {
         this.targetPlant = targetPlant;
@@ -286,6 +291,9 @@ class Zebra extends Animal {
         this.babyEnergy = babyEnergy;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
 }
 

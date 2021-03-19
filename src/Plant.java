@@ -8,15 +8,17 @@ class Plant {
     private float x;
     private float y;
     private final int FOODVAL = 100;
-    private int id = 0;
+    private int id;
     private boolean targeted;
+
+    private static int counter=1;
 
     public Plant() { }
 
-    public Plant(int x, int y, int id) {
-        setId(id);
+    public Plant(int x, int y) {
         setX(x);
         setY(y);
+        this.id = counter++;
     }
 
 
