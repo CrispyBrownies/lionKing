@@ -19,12 +19,13 @@ class Lion extends Animal {
     public Lion() { }
 
     public Lion(float x, float y) {
+        setAge(0);
         setName("Lion");
         setEnergy(10000);
         setSpeed(0.3f);
         setDetectRange(50);
         setWanderDirTimer(WANDERDIRTIMER);
-        this.PickNewDir();
+        this.setDirection(this.PickNewDir());
         this.targeted = false;
     }
 
@@ -47,7 +48,11 @@ class Lion extends Animal {
 
     //Call this method every time step
     public void Update(ArrayList<Zebra> zebraList, int mapSize) {
+
+        this.setAge(this.getAge()+1);
+
         DetectZebra(zebraList);
+
         if (this.targetZebra != null) {
             if (this.getAttentionSpan() == 0) {
                 this.targetZebra = null;

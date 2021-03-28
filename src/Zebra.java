@@ -36,9 +36,10 @@ class Zebra extends Animal {
         setWanderDirTimer(maxWanderDirTimer);
         setMaxWanderDirTimer(maxWanderDirTimer);
         setAttentionSpan(attentionSpan);
+        setAge(0);
         if (babyEnergy > breedEnergy) {babyEnergy = breedEnergy;};
         setBabyEnergy(babyEnergy);
-        this.PickNewDir();
+        this.setDirection(this.PickNewDir());
         this.setTargetDir(toVector(0f,0f));
     }
 
@@ -166,6 +167,9 @@ class Zebra extends Animal {
 
     //Call this method every time step, controls what the zebra is deciding to do
     public ArrayList<Zebra> Update(ArrayList<Plant> plantList, ArrayList<Zebra> zebraList, ArrayList<Lion> lionList, int mapSize) {
+
+        this.setAge(this.getAge()+1);
+
         ArrayList<Zebra> addZebras = new ArrayList<Zebra>();
 
         DetectEnemy(lionList);
@@ -245,8 +249,6 @@ class Zebra extends Animal {
         return baby;
     }
 
-
-
     public int getState() {
         return state;
     }
@@ -262,9 +264,6 @@ class Zebra extends Animal {
     public Plant getTargetPlant() {
         return targetPlant;
     }
-
-
-
 
     public void setTargetPlant(Plant targetPlant) {
         this.targetPlant = targetPlant;

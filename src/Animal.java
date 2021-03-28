@@ -9,6 +9,7 @@ class Animal {
     private float speed;
     private float energy;
     private float detectRange;
+    private int age;
 
     public Vector<Float> targetDir = new Vector<Float>(2);
 
@@ -25,7 +26,7 @@ class Animal {
     private float x;
     private float y;
 
-    private int environmentSize;
+    //private int environmentSize;
 
     public Animal() {
     }
@@ -43,14 +44,34 @@ class Animal {
         return nextX > 2 * mapSize || nextX < 0 || nextY > 2 * mapSize || nextY < 0;
     }
 
+    public void SmoothTurn(Vector<Float> newDir) {
+        int turnSteps = Math.round(5/this.speed);
+        Vector<Float> temp = toVector(1,0);
+
+        float turnAngle = Equations.AngleBTVector(this.direction,newDir)/turnSteps;
+        float currentAngle = Equations.AngleBTVector(this.direction,temp);
+
+        while (turnSteps != 0) {
+            currentAngle += turnAngle;
+
+            System.out.println("Current Angle: "+currentAngle);
+            System.out.println("Turn Angle: "+turnAngle);
+            this.direction = toVector((float) Math.cos(currentAngle),(float) Math.sin(currentAngle));
+            Graphics.DrawDir(this);
+            turnSteps--;
+        }
+
+    }
+
     //Sets animal's direction to new random direction
-    public void PickNewDir() {
+    public Vector<Float> PickNewDir() {
         double newAngle = Math.random() * 2 * Math.PI;
         Vector<Float> moveDir = new Vector<Float>();
         //System.out.println(getSpeed());
         moveDir.add((float) Math.cos(newAngle));
         moveDir.add((float) Math.sin(newAngle));
-        this.direction = moveDir;
+        return moveDir;
+        //this.direction = moveDir;
         //this.targetDir = moveDir;
     }
 
@@ -58,7 +79,8 @@ class Animal {
     public void Wander(int mapSize) {
         if (this.getWanderDirTimer() == 0) {
             this.setWanderDirTimer(this.getMaxWanderDirTimer());
-            this.PickNewDir();
+            this.SmoothTurn(this.PickNewDir());
+            //this.PickNewDir();
         }
         else {
             this.setWanderDirTimer(this.getWanderDirTimer()-1);
@@ -87,14 +109,14 @@ class Animal {
 
     //Moves the animal forward in whichever direction they want to travel in
     public void Advance(int mapSize) {
-//        System.out.println("Direction: "+this.direction);
-//        System.out.println("Position: "+this.x+" "+this.y);
+        System.out.println("Direction: "+this.direction);
+        System.out.println("Position: "+this.x+" "+this.y);
 //        System.out.println("Speed: "+this.speed);
 //        System.out.println("Energy: "+this.energy);
         this.energy -= Equations.EnergyCost(this.speed);
 
         while (CheckCollision(mapSize)) {
-            this.PickNewDir();
+            this.SmoothTurn(this.PickNewDir());
         }
         this.x += this.direction.get(0) * this.speed;
         this.y += this.direction.get(1) * this.speed;
@@ -107,8 +129,9 @@ class Animal {
         return newDirVect;
     }
 
-
-
+    public int getAge() {
+        return age;
+    }
 
     public int getMAXATTENTIONSPAN() {
         return MAXATTENTIONSPAN;
@@ -166,11 +189,13 @@ class Animal {
         return maxWanderDirTimer;
     }
 
-    public int getEnvironmentSize() {
-        return environmentSize;
+//    public int getEnvironmentSize() {
+//        return environmentSize;
+//    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
-
-
 
     public void setSpeed(float speed) {
         this.speed = speed;
@@ -220,9 +245,9 @@ class Animal {
         this.maxWanderDirTimer = maxWanderDirTimer;
     }
 
-    public void setEnvironmentSize(int environmentSize) {
-        this.environmentSize = environmentSize;
-    }
+//    public void setEnvironmentSize(int environmentSize) {
+//        this.environmentSize = environmentSize;
+//    }
 
     public void setTargetDir(Vector<Float> targetDir) {
         this.targetDir = targetDir;

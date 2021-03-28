@@ -20,7 +20,7 @@ class Simulation {
 
     private final int PLANTCOUNT = 0;
     private final int ZEBRACOUNT = 1;
-    private final int LIONCOUNT = 1;
+    private final int LIONCOUNT = 0;
 
     private final int MAPSIZE = 100;
     private final float MAXSPEED = 0.5f;
@@ -33,7 +33,7 @@ class Simulation {
     private final float MAXBABYENERGY = 500;
     private static boolean RunSim = true;
     private final int MAXWFOODTIMER = 10000;
-    private int spawnFoodTimer = 1;
+    private int spawnFoodTimer = 10000;
     private int plantID = 0;
 
     private ArrayList<Plant> PlantList = new ArrayList<Plant>(PLANTCOUNT);
@@ -42,17 +42,17 @@ class Simulation {
 
     public static void main(String[] args) throws IOException {
 
+
         Simulation sim = new Simulation();
         Graphics graphics = new Graphics(sim.getMAPSIZE());
+        System.out.println("hi");
+
 
         sim.CreateSim();
+        Data.CreateFiles();
+        Data.CreateHeaders();
 
         while (RunSim) {
-            // This line is critical for LWJGL's interoperation with GLFW's
-            // OpenGL context, or any context that is managed externally.
-            // LWJGL detects the context that is current in the current thread,
-            // creates the GLCapabilities instance and makes the OpenGL
-            // bindings available for use.
             GL.createCapabilities();
 
             // Set the clear color
@@ -77,7 +77,7 @@ class Simulation {
                 for (Zebra zebra : sim.ZebraList) {
                     addZebra = zebra.Update(sim.getPlantList(), sim.getZebraList(), sim.getLionList(), sim.getMAPSIZE());
                     graphics.DrawZebra(zebra);
-                    graphics.DrawDir(zebra);
+                    Graphics.DrawDir(zebra);
                     graphics.DrawRange(zebra);
                 }
                 System.out.println(sim.ZebraList.size());

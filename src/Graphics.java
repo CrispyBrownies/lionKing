@@ -107,14 +107,14 @@ public class Graphics {
         glEnd();
     }
 
-    public void DrawDir(Zebra zebra) {
-        float x = zebra.getX() / 100 - 1f;
-        float y = zebra.getY() / 100 - 1f;
+    public static void DrawDir(Animal animal) {
+        float x = animal.getX() / 100 - 1f;
+        float y = animal.getY() / 100 - 1f;
 
         //System.out.printf("hi");
         GL11.glColor3f(172f / 255f, 13f / 255f, 13f / 255f);
 
-        Vector<Float> targetDir = zebra.getTargetDir();
+        Vector<Float> targetDir = animal.getTargetDir();
         //System.out.println("this: "+targetDir);
 
         float targetX = targetDir.get(0) / 100 - 1f;
