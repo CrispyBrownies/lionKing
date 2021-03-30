@@ -14,11 +14,17 @@ class Equations {
     }
 
     public static float AngleBTVector(Vector<Float> dir1, Vector<Float> dir2) {
-        //float magProd = EuclDist(0,0,dir1.get(0),dir1.get(0))*EuclDist(0,0,dir2.get(0),dir2.get(1));
-        //float dotProd = dir1.get(0)*dir2.get(0)+dir1.get(1)*dir2.get(1);
-
-        float angle = (float)Math.acos(1-(Math.pow(EuclDist(dir1.get(0),dir1.get(1),dir2.get(0),dir2.get(1)),2)/2));
-        //float angle = (float)Math.acos(dotProd/magProd);
+        double magProd = EuclDist(0,0,dir1.get(0),dir1.get(1))*EuclDist(0,0,dir2.get(0),dir2.get(1));
+        double dotProd = dir1.get(0)*dir2.get(0)+dir1.get(1)*dir2.get(1);
+//        System.out.println("dir1: "+dir1);
+//        System.out.println("dir2: "+dir2);
+        float c = EuclDist(dir1.get(0),dir1.get(1),dir2.get(0),dir2.get(1));
+//        System.out.println("c: "+c);
+        //float angle = (float)(Math.acos(Math.pow(c,2)/-2));
+        //float
+        //System.out.println("angle 1: "+angle);
+        float angle = (float)Math.acos(dotProd/magProd);
+//        System.out.println("angle: "+angle);
         return angle;
     }
 }

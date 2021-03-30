@@ -2,6 +2,9 @@
 //Created: 3/11/2021
 //Main Class for animal properties and methods
 
+import org.lwjgl.opengl.GL11;
+
+import java.nio.channels.ScatteringByteChannel;
 import java.util.Vector;
 
 class Animal {
@@ -10,8 +13,12 @@ class Animal {
     private float energy;
     private float detectRange;
     private int age;
+    private int movementState;
+    private float turnAngle;
+    private int turnSteps;
 
     public Vector<Float> targetDir = new Vector<Float>(2);
+    public Vector<Float> targetPos = new Vector<Float>(2);
 
     private double xdirection;
     private double ydirection;
@@ -33,90 +40,183 @@ class Animal {
 
     //Calculates if next move will be outside the map
     public boolean CheckCollision(int mapSize) {
-        float nextX = this.x + this.direction.get(0) * this.speed;
-        float nextY = this.y + this.direction.get(1) * this.speed;
+        float nextX = this.x + this.direction.get(0) * 1 * this.speed;
+        float nextY = this.y + this.direction.get(1) * 1 * this.speed;
 
-//        this.targetDir.set(0,nextX*10);
-//        this.targetDir.set(1,nextY*10);
-
-        //System.out.println("Next Pos:  "+targetDir);
-        //System.out.println("OUT");
         return nextX > 2 * mapSize || nextX < 0 || nextY > 2 * mapSize || nextY < 0;
     }
 
-    public void SmoothTurn(Vector<Float> newDir) {
-        int turnSteps = Math.round(5/this.speed);
-        Vector<Float> temp = toVector(1,0);
+//    public void MovementController(int mapSize) {
+//        switch (this.movementState) {
+//            case 0: { //moving
+//                Advance(mapSize);
+//                break;
+//            }
+//            case 1: { //turning
+//                SmoothTurning();
+//                break;
+//            }
+//        }
+//    }
 
-        float turnAngle = Equations.AngleBTVector(this.direction,newDir)/turnSteps;
-        float currentAngle = Equations.AngleBTVector(this.direction,temp);
+//    public void SmoothTurning() {
+//
+//        Vector<Float> temp = toVector(1,0);
+//        float currentAngle = Equations.AngleBTVector(this.direction,temp);
+//
+//        if (this.turnSteps != 0) {
+//            currentAngle += this.turnAngle;
+//            this.direction = toVector(this.x+(float)Math.cos(currentAngle),this.y+(float)Math.sin(currentAngle));
+//            this.targetPos = this.direction;
+//            this.turnSteps--;
+//        }
+//        else {
+//            this.movementState = 0;
+//        }
+//    }
 
-        while (turnSteps != 0) {
-            currentAngle += turnAngle;
+//    public void SmoothTurn(Vector<Float> newDir) {
+//        this.turnSteps = Math.round(10/this.speed);
+//
+//        System.out.println("TurnSteps: "+this.turnSteps);
+////        Vector<Float> temp = toVector(1,0);
+//
+//        this.turnAngle = Equations.AngleBTVector(this.direction,newDir)/this.turnSteps;
+////        float currentAngle = Equations.AngleBTVector(this.direction,temp);
+//
+////        while (turnSteps != 0) {
+////            currentAngle += turnAngle;
+////
+////            System.out.println("Current Angle: "+currentAngle);
+////            System.out.println("Turn Angle: "+turnAngle);
+////            this.direction = toVector((float) Math.cos(currentAngle),(float) Math.sin(currentAngle));
+////            //this.targetDir = this.direction;
+////            float nextX = this.getX()+this.getDirection().get(0)*this.getSpeed()*100f;
+////            float nextY = this.getY()+this.getDirection().get(1)*this.getSpeed()*100f;
+////            this.setTargetDir(toVector(nextX,nextY));
+////            Graphics.DrawDir(this);
+////            try {
+////                Thread.sleep(100);
+////            }catch (InterruptedException e) {
+////                e.printStackTrace();
+////            }
+////            turnSteps--;
+////        }
+//
+//    }
 
-            System.out.println("Current Angle: "+currentAngle);
-            System.out.println("Turn Angle: "+turnAngle);
-            this.direction = toVector((float) Math.cos(currentAngle),(float) Math.sin(currentAngle));
-            Graphics.DrawDir(this);
-            turnSteps--;
+    public void SetTargetDir(Object object) {
+        float mag;
+        if (object instanceof Zebra) {
+            mag = Equations.EuclDist(this.x,this.y,((Zebra) object).getX(),((Zebra) object).getY());
+            this.targetDir = toVector((((Zebra) object).getX()-this.x)/mag,(((Zebra) object).getY()-this.y)/mag);
         }
-
+        else if (object instanceof Lion) {
+            mag = Equations.EuclDist(this.x,this.y,((Lion) object).getX(),((Lion) object).getY());
+            this.targetDir = toVector((this.x-((Lion) object).getX())/mag,(this.y-((Lion) object).getY())/mag);
+        }
+        else if (object instanceof Plant) {
+            mag = Equations.EuclDist(this.x,this.y,((Plant) object).getX(),((Plant) object).getY());
+            this.targetDir = toVector((((Plant) object).getX()-this.x)/mag,(((Plant) object).getY()-this.y)/mag);
+        }
+        else {
+            mag = Equations.EuclDist(this.x,this.y,((Vector<Float>) object).get(0),((Vector<Float>) object).get(1));
+            this.targetDir = toVector((((Vector<Float>) object).get(0)-this.x)/mag,(((Vector<Float>) object).get(1)-this.y)/mag);
+        }
     }
 
     //Sets animal's direction to new random direction
-    public Vector<Float> PickNewDir() {
+    public void PickNewDir() {
         double newAngle = Math.random() * 2 * Math.PI;
         Vector<Float> moveDir = new Vector<Float>();
-        //System.out.println(getSpeed());
         moveDir.add((float) Math.cos(newAngle));
         moveDir.add((float) Math.sin(newAngle));
-        return moveDir;
-        //this.direction = moveDir;
-        //this.targetDir = moveDir;
+        this.targetDir = moveDir;
+        //return moveDir;
     }
 
     //Call every time step during wander phase
     public void Wander(int mapSize) {
         if (this.getWanderDirTimer() == 0) {
             this.setWanderDirTimer(this.getMaxWanderDirTimer());
-            this.SmoothTurn(this.PickNewDir());
-            //this.PickNewDir();
+            this.PickNewDir();
+            //this.SmoothTurn(this.PickNewDir());
+            //this.movementState = 1;
         }
         else {
             this.setWanderDirTimer(this.getWanderDirTimer()-1);
         }
-        float nextX = this.getX()+this.getDirection().get(0)*this.getSpeed()*100f;
-        float nextY = this.getY()+this.getDirection().get(1)*this.getSpeed()*100f;
-        this.setTargetDir(toVector(nextX,nextY));
-        Advance(mapSize);
+        float nextX = this.getX()+this.direction.get(0)*this.getSpeed()*100f;
+        float nextY = this.getY()+this.direction.get(1)*this.getSpeed()*100f;
+        this.setTargetPos(toVector(nextX,nextY));
+        //Advance(mapSize);
     }
 
-
-    //Handles movement of animal, dir = 1: towards, else: away
-    public void Move(float targetX, float targetY, int dir, int mapSize) {
-        Vector<Float> moveDir = new Vector<Float>();
-        float magnitude = Equations.EuclDist(targetX, targetY, this.x, this.y);
-        if (dir == 0) {
-            moveDir.add((this.x - targetX) / magnitude);
-            moveDir.add((this.y - targetY) / magnitude);
-        } else {
-            moveDir.add((targetX - this.x) / magnitude);
-            moveDir.add((targetY - this.y) / magnitude);
+    public void Turn(int dir) {
+        System.out.println("Direction: "+this.direction);
+        System.out.println("Position: "+this.x+" "+this.y);
+        System.out.println("Target Dir: "+this.targetDir);
+        float angleBtwn = Equations.AngleBTVector(this.direction, this.targetDir);
+        float currentAngle = Equations.AngleBTVector(toVector(1,0),this.direction);
+        float scale = 1;
+        System.out.println("Angle: "+Math.toDegrees(angleBtwn));
+        float signedAngle = Math.signum(this.direction.get(1))*currentAngle + Math.signum(this.targetDir.get(1))*this.speed*scale*angleBtwn;
+        System.out.println("Signed Angle: "+Math.toDegrees(signedAngle));
+        Vector<Float> turnDir;
+        if (!Float.isNaN(angleBtwn)) {
+            switch (dir) {
+                case 0: {
+                    turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
+                    break;
+                }
+                case 1: {
+                    turnDir = toVector((float) (-1 * Math.cos(angleBtwn * this.speed)), (float) (-1 * Math.sin(angleBtwn * this.speed)));
+                    break;
+                }
+                default:
+                    throw new IllegalStateException("Unexpected value: " + dir);
+            }
         }
-        this.direction = moveDir;
-        Advance(mapSize);
+        else {
+            turnDir = this.direction;
+        }
+//        System.out.println("Turn Dir: "+turnDir);
+        this.direction = turnDir;
     }
+
+//    //Handles movement of animal, dir = 1: towards, else: away
+//    public void Move(float targetX, float targetY, int dir, int mapSize) {
+//        Vector<Float> moveDir = new Vector<Float>();
+//        float magnitude = Equations.EuclDist(targetX, targetY, this.x, this.y);
+//        if (dir == 0) {
+//            moveDir.add((this.x - targetX) / magnitude);
+//            moveDir.add((this.y - targetY) / magnitude);
+//        } else {
+//            moveDir.add((targetX - this.x) / magnitude);
+//            moveDir.add((targetY - this.y) / magnitude);
+//        }
+//        this.direction = moveDir;
+//        Advance(mapSize);
+//    }
+//
 
     //Moves the animal forward in whichever direction they want to travel in
     public void Advance(int mapSize) {
-        System.out.println("Direction: "+this.direction);
-        System.out.println("Position: "+this.x+" "+this.y);
+//        System.out.println("Direction: "+this.direction);
+//        System.out.println("Position: "+this.x+" "+this.y);
+//        System.out.println("Target Dir: "+this.targetDir);
 //        System.out.println("Speed: "+this.speed);
 //        System.out.println("Energy: "+this.energy);
         this.energy -= Equations.EnergyCost(this.speed);
 
         while (CheckCollision(mapSize)) {
-            this.SmoothTurn(this.PickNewDir());
+//            System.out.println("OUT");
+//            System.out.println("Direction: "+this.direction);
+//            System.out.println("Target Dir: "+this.targetDir);
+            this.PickNewDir();
+            Turn(0);
+            //this.SmoothTurn(this.PickNewDir());
+            //this.movementState = 1;
         }
         this.x += this.direction.get(0) * this.speed;
         this.y += this.direction.get(1) * this.speed;
@@ -127,6 +227,14 @@ class Animal {
         newDirVect.add(x);
         newDirVect.add(y);
         return newDirVect;
+    }
+
+    public int getMovementState() {
+        return movementState;
+    }
+
+    public Vector<Float> getTargetPos() {
+        return targetPos;
     }
 
     public int getAge() {
@@ -192,6 +300,14 @@ class Animal {
 //    public int getEnvironmentSize() {
 //        return environmentSize;
 //    }
+
+    public void setMovementState(int movementState) {
+        this.movementState = movementState;
+    }
+
+    public void setTargetPos(Vector<Float> targetPos) {
+        this.targetPos = targetPos;
+    }
 
     public void setAge(int age) {
         this.age = age;

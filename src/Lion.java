@@ -25,7 +25,8 @@ class Lion extends Animal {
         setSpeed(0.3f);
         setDetectRange(50);
         setWanderDirTimer(WANDERDIRTIMER);
-        this.setDirection(this.PickNewDir());
+        //this.setDirection(this.PickNewDir());
+        this.PickNewDir();
         this.targeted = false;
     }
 
@@ -60,7 +61,10 @@ class Lion extends Animal {
             }
             else {
                 this.setAttentionSpan(this.getAttentionSpan()-1);
-                Move(targetZebra.getX(), targetZebra.getY(), 1, mapSize);
+                SetTargetDir(this.targetZebra);
+                //Move(targetZebra.getX(), targetZebra.getY(), 1, mapSize);
+                Turn(mapSize);
+                Advance(mapSize);
                 EatZebra(zebraList);
             }
         }

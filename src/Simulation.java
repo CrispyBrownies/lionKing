@@ -17,8 +17,7 @@ import java.util.Iterator;
 
 class Simulation {
 
-
-    private final int PLANTCOUNT = 0;
+    private final int PLANTCOUNT = 100;
     private final int ZEBRACOUNT = 1;
     private final int LIONCOUNT = 0;
 
@@ -32,8 +31,8 @@ class Simulation {
     private final int MAXWANDERDIRTIME = 1000;
     private final float MAXBABYENERGY = 500;
     private static boolean RunSim = true;
-    private final int MAXWFOODTIMER = 10000;
-    private int spawnFoodTimer = 10000;
+    private final int MAXWFOODTIMER = 100;
+    private int spawnFoodTimer = 10;
     private int plantID = 0;
 
     private ArrayList<Plant> PlantList = new ArrayList<Plant>(PLANTCOUNT);
@@ -45,8 +44,7 @@ class Simulation {
 
         Simulation sim = new Simulation();
         Graphics graphics = new Graphics(sim.getMAPSIZE());
-        System.out.println("hi");
-
+        //System.out.println("hi");
 
         sim.CreateSim();
         Data.CreateFiles();
@@ -62,6 +60,13 @@ class Simulation {
             // the window or has pressed the ESCAPE key.
             while (!glfwWindowShouldClose(graphics.getWindow())) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 //System.out.println(sim.spawnFoodTimer);
                 if (sim.spawnFoodTimer == 0) {
                     sim.spawnFoodTimer = sim.MAXWFOODTIMER;
@@ -72,20 +77,23 @@ class Simulation {
                 sim.CheckDeath();
                 ArrayList<Zebra> addZebra = new ArrayList<Zebra>();
                 for (Plant plant : sim.PlantList) {
-                    graphics.DrawPlant(plant);
+                    Graphics.DrawObject(plant);
+                    //graphics.DrawPlant(plant);
                 }
                 for (Zebra zebra : sim.ZebraList) {
                     addZebra = zebra.Update(sim.getPlantList(), sim.getZebraList(), sim.getLionList(), sim.getMAPSIZE());
-                    graphics.DrawZebra(zebra);
-                    Graphics.DrawDir(zebra);
-                    graphics.DrawRange(zebra);
+                    //graphics.DrawZebra(zebra);
+                    Graphics.DrawObject(zebra);
+                    //Graphics.DrawDir(zebra);
+                    //graphics.DrawRange(zebra);
                 }
-                System.out.println(sim.ZebraList.size());
+                //System.out.println(sim.ZebraList.size());
                 sim.ZebraList.addAll(addZebra);
                 addZebra.clear();
                 for (Lion lion : sim.LionList) {
                     lion.Update(sim.getZebraList(), sim.getMAPSIZE());
-                    graphics.DrawLion(lion);
+//                    graphics.DrawLion(lion);
+                    Graphics.DrawObject(lion);
                 }
                 sim.spawnFoodTimer -= 1;
                 graphics.Update();
@@ -122,9 +130,6 @@ class Simulation {
             LionList.add(newLion);
         }
     }
-
-
-
 
     public ArrayList<Lion> getLionList() {
         return LionList;

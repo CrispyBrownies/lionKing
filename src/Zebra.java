@@ -39,8 +39,12 @@ class Zebra extends Animal {
         setAge(0);
         if (babyEnergy > breedEnergy) {babyEnergy = breedEnergy;};
         setBabyEnergy(babyEnergy);
-        this.setDirection(this.PickNewDir());
-        this.setTargetDir(toVector(0f,0f));
+        //this.setDirection(this.PickNewDir());
+        this.PickNewDir();
+        this.setDirection(toVector(1f,0f));
+        //this.setTargetDir(toVector(0f,0f));
+        this.setTargetPos(toVector(0f,0f));
+        this.setMovementState(0);
     }
 
     //Searches for plants in detection range, sets target plant to nearest plant
@@ -79,17 +83,17 @@ class Zebra extends Animal {
     private void StateManager() {
         if (this.targetLion != null) {
             this.state = 3;
-            this.setTargetDir(toVector(targetLion.getX(),targetLion.getY()));
+            this.setTargetPos(toVector(targetLion.getX(),targetLion.getY()));
         }
         else {
             if (this.targetMate != null) {
                 this.state = 2;
-                this.setTargetDir(toVector(targetMate.getX(), targetMate.getY()));
+                this.setTargetPos(toVector(targetMate.getX(), targetMate.getY()));
             }
             else {
                 if (this.targetPlant != null) {
                     this.state = 1;
-                    this.setTargetDir(toVector(targetPlant.getX(), targetPlant.getY()));
+                    this.setTargetPos(toVector(targetPlant.getX(), targetPlant.getY()));
                 } else {
                     this.state = 0;
                 }
@@ -188,23 +192,28 @@ class Zebra extends Animal {
                 Wander(mapSize);
                 break;
             case 1: //searching for food
-                System.out.println("FOOD");
+                //System.out.println("FOOD");
                 if (this.targetPlant != null) {
-                    Move(this.targetPlant.getX(),this.targetPlant.getY(),1,mapSize);
+                    SetTargetDir(this.targetPlant);
+                    //Move(this.targetPlant.getX(),this.targetPlant.getY(),1,mapSize);
                     Eat(plantList);
                 }
                 break;
             case 2: //searching for mate
-                Move(this.targetMate.getX(),this.targetMate.getY(),1,mapSize);
+                SetTargetDir(this.targetMate);
+                //Move(this.targetMate.getX(),this.targetMate.getY(),1,mapSize);
                 Zebra baby = Mate();
                 if (baby.state != 10) {
                     addZebras.add(baby);
                 }
                 break;
             case 3: //running from predator
-                Move(this.targetLion.getX(),this.targetLion.getY(),0,mapSize);
+                SetTargetDir(this.targetLion);
+                //Move(this.targetLion.getX(),this.targetLion.getY(),0,mapSize);
                 break;
         }
+        Turn(0);
+        Advance(mapSize);
         return addZebras;
     }
 

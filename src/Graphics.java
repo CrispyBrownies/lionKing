@@ -18,7 +18,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class Graphics {
 
-    private long window;
+    private static long window;
 
     public Graphics(int mapSize) {
         // Setup an error callback. The default implementation
@@ -73,7 +73,7 @@ public class Graphics {
         glfwShowWindow(window);
     }
 
-    public void Update() {
+    public static void Update() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -92,11 +92,10 @@ public class Graphics {
         return window;
     }
 
-    public void DrawRange(Zebra zebra) {
+    public static void DrawRange(Zebra zebra) {
         float x = zebra.getX() / 100 - 1f;
         float y = zebra.getY() / 100 - 1f;
         float rad = zebra.getDetectRange() / 100f;
-        //System.out.println(rad);
 
         GL11.glColor3f(167f / 255f, 5f / 255f, 237f / 255f);
 
@@ -111,14 +110,13 @@ public class Graphics {
         float x = animal.getX() / 100 - 1f;
         float y = animal.getY() / 100 - 1f;
 
-        //System.out.printf("hi");
         GL11.glColor3f(172f / 255f, 13f / 255f, 13f / 255f);
 
-        Vector<Float> targetDir = animal.getTargetDir();
+        Vector<Float> targetDir = animal.getDirection();
         //System.out.println("this: "+targetDir);
 
-        float targetX = targetDir.get(0) / 100 - 1f;
-        float targetY = targetDir.get(1) / 100 - 1f;
+        float targetX = x+targetDir.get(0) * 1;
+        float targetY = y+targetDir.get(1) * 1;
 
         glBegin(GL_LINES);
         glVertex2f(targetX, targetY);
@@ -127,16 +125,38 @@ public class Graphics {
 
     }
 
-    public void DrawZebra(Zebra zebra) {
-        if (zebra.isTargeted()) {
-            GL11.glColor3f(33f / 255f, 248f / 255f, 255f / 255f);
-        } else {
-            GL11.glColor3f(170f / 255f, 170f / 255f, 170f / 255f);
+    public static void DrawObject(Object object) {
+        float x,y;
+        if (object instanceof Zebra) {
+            DrawDir((Zebra)object);
+            DrawRange((Zebra)object);
+            if (((Zebra) object).isTargeted()) {
+                GL11.glColor3f(33f / 255f, 248f / 255f, 255f / 255f);
+            } else {
+                GL11.glColor3f(170f / 255f, 170f / 255f, 170f / 255f);
+            }
+
+            x = ((Zebra)object).getX() / 100 - 1f;
+            y = ((Zebra)object).getY() / 100 - 1f;
+        }
+        else if (object instanceof Lion) {
+            DrawDir((Lion)object);
+            GL11.glColor3f(243f / 255f, 105f / 255f, 25f / 255f);
+
+            x = ((Lion)object).getX() / 100 - 1f;
+            y = ((Lion)object).getY() / 100 - 1f;
+        }
+        else {
+            if (((Plant)object).isTargeted()) {
+                GL11.glColor3f(17f / 255f, 54f / 255f, 240f / 255f);
+            } else {
+                GL11.glColor3f(10f / 255f, 153f / 255f, 35f / 255f);
+            }
+
+            x = ((Plant)object).getX() / 100 - 1f;
+            y = ((Plant)object).getY() / 100 - 1f;
         }
 
-        float x = zebra.getX() / 100 - 1f;
-        float y = zebra.getY() / 100 - 1f;
-
         glBegin(GL_QUADS);
         glVertex2f(x - 1f / 100f, y + 1f / 100f);
         glVertex2f(x + 1f / 100f, y + 1f / 100f);
@@ -145,41 +165,62 @@ public class Graphics {
         glEnd();
     }
 
-    public void DrawLion(Lion lion) {
-        GL11.glColor3f(243f / 255f, 105f / 255f, 25f / 255f);
 
-        float x = lion.getX() / 100 - 1f;
-        float y = lion.getY() / 100 - 1f;
-
-        glBegin(GL_QUADS);
-        glVertex2f(x - 1f / 100f, y + 1f / 100f);
-        glVertex2f(x + 1f / 100f, y + 1f / 100f);
-        glVertex2f(x + 1f / 100f, y - 1f / 100f);
-        glVertex2f(x - 1f / 100f, y - 1f / 100f);
-        glEnd();
-    }
-
-    public void DrawPlant(Plant plant) {
-        if (plant.isTargeted()) {
-            GL11.glColor3f(17f / 255f, 54f / 255f, 240f / 255f);
-        } else {
-            GL11.glColor3f(10f / 255f, 153f / 255f, 35f / 255f);
-        }
-
-        float x = plant.getX() / 100 - 1f;
-        float y = plant.getY() / 100 - 1f;
-
-        glBegin(GL_QUADS);
-        glVertex2f(x - 1f / 100f, y + 1f / 100f);
-        glVertex2f(x + 1f / 100f, y + 1f / 100f);
-        glVertex2f(x + 1f / 100f, y - 1f / 100f);
-        glVertex2f(x - 1f / 100f, y - 1f / 100f);
-        glEnd();
-    }
 }
 
 //    CODE GRAVEYARD
 //============================================================================
+//
+//    public void DrawZebra(Zebra zebra) {
+//        if (zebra.isTargeted()) {
+//            GL11.glColor3f(33f / 255f, 248f / 255f, 255f / 255f);
+//        } else {
+//            GL11.glColor3f(170f / 255f, 170f / 255f, 170f / 255f);
+//        }
+//
+//        float x = zebra.getX() / 100 - 1f;
+//        float y = zebra.getY() / 100 - 1f;
+//
+//        glBegin(GL_QUADS);
+//        glVertex2f(x - 1f / 100f, y + 1f / 100f);
+//        glVertex2f(x + 1f / 100f, y + 1f / 100f);
+//        glVertex2f(x + 1f / 100f, y - 1f / 100f);
+//        glVertex2f(x - 1f / 100f, y - 1f / 100f);
+//        glEnd();
+//    }
+//
+//    public void DrawLion(Lion lion) {
+//        GL11.glColor3f(243f / 255f, 105f / 255f, 25f / 255f);
+//
+//        float x = lion.getX() / 100 - 1f;
+//        float y = lion.getY() / 100 - 1f;
+//
+//        glBegin(GL_QUADS);
+//        glVertex2f(x - 1f / 100f, y + 1f / 100f);
+//        glVertex2f(x + 1f / 100f, y + 1f / 100f);
+//        glVertex2f(x + 1f / 100f, y - 1f / 100f);
+//        glVertex2f(x - 1f / 100f, y - 1f / 100f);
+//        glEnd();
+//    }
+//
+//    public void DrawPlant(Plant plant) {
+//        if (plant.isTargeted()) {
+//            GL11.glColor3f(17f / 255f, 54f / 255f, 240f / 255f);
+//        } else {
+//            GL11.glColor3f(10f / 255f, 153f / 255f, 35f / 255f);
+//        }
+//
+//        float x = plant.getX() / 100 - 1f;
+//        float y = plant.getY() / 100 - 1f;
+//
+//        glBegin(GL_QUADS);
+//        glVertex2f(x - 1f / 100f, y + 1f / 100f);
+//        glVertex2f(x + 1f / 100f, y + 1f / 100f);
+//        glVertex2f(x + 1f / 100f, y - 1f / 100f);
+//        glVertex2f(x - 1f / 100f, y - 1f / 100f);
+//        glEnd();
+//    }
+
 //    public void run() {
 //        //System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 //
