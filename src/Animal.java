@@ -153,32 +153,58 @@ class Animal {
     }
 
     public void Turn(int dir) {
-        System.out.println("Direction: "+this.direction);
-        System.out.println("Position: "+this.x+" "+this.y);
-        System.out.println("Target Dir: "+this.targetDir);
-        float angleBtwn = Equations.AngleBTVector(this.direction, this.targetDir);
-        float currentAngle = Equations.AngleBTVector(toVector(1,0),this.direction);
-        float scale = 1;
-        System.out.println("Angle: "+Math.toDegrees(angleBtwn));
-        float signedAngle = Math.signum(this.direction.get(1))*currentAngle + Math.signum(this.targetDir.get(1))*this.speed*scale*angleBtwn;
-        System.out.println("Signed Angle: "+Math.toDegrees(signedAngle));
-        Vector<Float> turnDir;
-        if (!Float.isNaN(angleBtwn)) {
-            switch (dir) {
-                case 0: {
-                    turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
-                    break;
-                }
-                case 1: {
-                    turnDir = toVector((float) (-1 * Math.cos(angleBtwn * this.speed)), (float) (-1 * Math.sin(angleBtwn * this.speed)));
-                    break;
-                }
-                default:
-                    throw new IllegalStateException("Unexpected value: " + dir);
+
+        Vector<Float> turnDir = this.direction;
+        if ((Equations.Truncate(this.direction.get(0),2) != Equations.Truncate(this.targetDir.get(0),2)) && (Equations.Truncate(this.direction.get(1),3) != Equations.Truncate(this.targetDir.get(1),3))) {
+            float angleBtwn = Equations.AngleBTVector(this.direction, this.targetDir);
+//            if (Float.isNaN(angleBtwn)) {
+//                System.out.println("Direction: "+direction);
+//                System.out.println("Target Dir: "+targetDir);
+//            }
+            float currentAngle = Equations.AngleBTVector(toVector(1,0),this.direction);
+
+            float scale = 1;
+              System.out.println("Direction: "+this.direction);
+//              System.out.println("Position: "+this.x+" "+this.y);
+              System.out.println("Target Dir: "+this.targetDir);
+            System.out.println("Angle Btwn: "+Math.toDegrees(angleBtwn));
+            System.out.println("Current Angle: "+Math.signum(currentAngle)*Math.toDegrees(currentAngle));
+
+            float signedAngle = Math.signum(this.direction.get(1))*currentAngle + Equations.SignCP(this.direction,this.targetDir)*this.speed*scale*angleBtwn;
+//
+//            if (angleBtwn > Math.PI-currentAngle) {
+//                System.out.println("more");
+//                signedAngle = Math.signum(this.direction.get(1))*currentAngle + Math.signum(this.direction.get(1))*this.speed*scale*angleBtwn;
+//            }
+//            else {
+//                System.out.println("less");
+//                signedAngle = Math.signum(this.direction.get(1))*currentAngle + Math.signum(this.direction.get(1))*this.speed*scale*angleBtwn;
+//            }
+
+            if (signedAngle > Math.PI) {
+                signedAngle = -(2*(float)Math.PI-signedAngle);
+            } else if (signedAngle < -Math.PI) {
+                signedAngle = (2*(float)Math.PI+signedAngle);
             }
-        }
-        else {
-            turnDir = this.direction;
+
+            System.out.println("Signed Angle: "+Math.toDegrees(signedAngle));
+            if (!Float.isNaN(angleBtwn)) {
+                switch (dir) {
+                    case 0: {
+                        turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
+                        break;
+                    }
+                    case 1: {
+                        turnDir = toVector((float) (-1 * Math.cos(angleBtwn * this.speed)), (float) (-1 * Math.sin(angleBtwn * this.speed)));
+                        break;
+                    }
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + dir);
+                }
+            }
+            else {
+                turnDir = this.targetDir;
+            }
         }
 //        System.out.println("Turn Dir: "+turnDir);
         this.direction = turnDir;
@@ -210,7 +236,7 @@ class Animal {
         this.energy -= Equations.EnergyCost(this.speed);
 
         while (CheckCollision(mapSize)) {
-//            System.out.println("OUT");
+            System.out.println("OUT");
 //            System.out.println("Direction: "+this.direction);
 //            System.out.println("Target Dir: "+this.targetDir);
             this.PickNewDir();

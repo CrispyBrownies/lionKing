@@ -41,7 +41,7 @@ class Zebra extends Animal {
         setBabyEnergy(babyEnergy);
         //this.setDirection(this.PickNewDir());
         this.PickNewDir();
-        this.setDirection(toVector(1f,0f));
+        this.setDirection(toVector(0f,1f));
         //this.setTargetDir(toVector(0f,0f));
         this.setTargetPos(toVector(0f,0f));
         this.setMovementState(0);
@@ -224,7 +224,7 @@ class Zebra extends Animal {
             this.setEnergy(this.getEnergy()+this.targetPlant.getFOODVAL());
             plantList.remove(targetPlant); //removes this plant
             this.targetPlant = null; //clear targetPlant variable
-            this.PickNewDir();
+            //this.PickNewDir();
         }
     }
 

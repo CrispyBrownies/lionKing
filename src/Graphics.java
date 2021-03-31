@@ -115,8 +115,8 @@ public class Graphics {
         Vector<Float> targetDir = animal.getDirection();
         //System.out.println("this: "+targetDir);
 
-        float targetX = x+targetDir.get(0) * 1;
-        float targetY = y+targetDir.get(1) * 1;
+        float targetX = x+targetDir.get(0) * animal.getSpeed();
+        float targetY = y+targetDir.get(1) * animal.getSpeed();
 
         glBegin(GL_LINES);
         glVertex2f(targetX, targetY);

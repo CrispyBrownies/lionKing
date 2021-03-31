@@ -13,6 +13,16 @@ class Equations {
         return energyCost;
     }
 
+    public static float Truncate(float value, int places) {
+        float scale = (float)Math.pow(10, places);
+        return (float)Math.round(value * scale) / scale;
+    }
+
+    public static int SignCP(Vector<Float> dir1, Vector<Float> dir2) {
+        float z = dir1.get(0)*dir2.get(1)-dir1.get(1)*dir2.get(0);
+        return (int)Math.signum(z);
+    }
+
     public static float AngleBTVector(Vector<Float> dir1, Vector<Float> dir2) {
         double magProd = EuclDist(0,0,dir1.get(0),dir1.get(1))*EuclDist(0,0,dir2.get(0),dir2.get(1));
         double dotProd = dir1.get(0)*dir2.get(0)+dir1.get(1)*dir2.get(1);
