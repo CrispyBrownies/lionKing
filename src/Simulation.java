@@ -41,7 +41,6 @@ class Simulation {
 
     public static void main(String[] args) throws IOException {
 
-
         Simulation sim = new Simulation();
         Graphics graphics = new Graphics(sim.getMAPSIZE());
         //System.out.println("hi");
