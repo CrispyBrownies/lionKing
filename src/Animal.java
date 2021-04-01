@@ -140,7 +140,7 @@ class Animal {
                 signedAngle = (2*(float)Math.PI+signedAngle);
             }
 
-            System.out.println("Signed Angle: "+Math.toDegrees(signedAngle));
+//            System.out.println("Signed Angle: "+Math.toDegrees(signedAngle));
             if (!Float.isNaN(angleBtwn)) {
                 switch (dir) {
                     case 0: {
@@ -164,7 +164,7 @@ class Animal {
     }
 
     //Method for turning giving angle
-    public void Turn(float turnAngle) {
+    public void TurnWall(float turnAngle) {
         Vector<Float> turnDir = this.direction;
         if (Equations.Truncate(turnAngle,3) != 0.000f) {
             float currentAngle = Equations.AngleBTVector(toVector(1,0),this.direction);
@@ -183,18 +183,20 @@ class Animal {
 //            } else if (signedAngle < -Math.PI) {
 //                signedAngle = (2*(float)Math.PI+signedAngle);
 //            }
+            turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
+            this.targetDir = turnDir;
 
-            System.out.println("Signed Angle: "+Math.toDegrees(signedAngle));
-            if (!Float.isNaN(turnAngle)) {
-                turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
-                this.targetDir = turnDir;
-            }
+//            System.out.println("Signed Angle: "+Math.toDegrees(signedAngle));
+//            if (!Float.isNaN(turnAngle)) {
+//                turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
+//                this.targetDir = turnDir;
+//            }
 //            else {
 //                turnDir = this.targetDir;
 //            }
         }
 //        System.out.println("Turn Dir: "+turnDir);
-        this.direction = turnDir;
+        //this.direction = turnDir;
     }
 
     //Moves the animal forward in whichever direction they want to travel in
@@ -206,29 +208,26 @@ class Animal {
 //        System.out.println("Energy: "+this.energy);
         this.energy -= Equations.EnergyCost(this.speed);
 
-        while (CheckCollision(mapSize)) {
+        if (CheckCollision(mapSize)) {
 //            System.out.println("OUT");
 //            System.out.println("Direction: "+this.direction);
 //            System.out.println("Target Dir: "+this.targetDir);
+            float angleBtwn = (float)(Math.PI/2 + Math.random()*Math.PI/2);
             switch (ClosestWall(mapSize)) {
                 case 0: {
-                    float angleBtwn = (float)(Math.random()*Math.PI/2);
-                    Turn(angleBtwn*-1*Math.signum(this.direction.get(0)));
+                    TurnWall(angleBtwn*-1*Math.signum(this.direction.get(0)));
                     break;
                 }
                 case 1: {
-                    float angleBtwn = (float)(Math.random()*Math.PI/2);
-                    Turn(angleBtwn*1*Math.signum(this.direction.get(1)));
+                    TurnWall(angleBtwn*1*Math.signum(this.direction.get(1)));
                     break;
                 }
                 case 2: {
-                    float angleBtwn = (float)(Math.random()*Math.PI/2);
-                    Turn(angleBtwn*1*Math.signum(this.direction.get(0)));
+                    TurnWall(angleBtwn*1*Math.signum(this.direction.get(0)));
                     break;
                 }
                 case 3: {
-                    float angleBtwn = (float)(Math.random()*Math.PI/2);
-                    Turn(angleBtwn*-1*Math.signum(this.direction.get(1)));
+                    TurnWall(angleBtwn*-1*Math.signum(this.direction.get(1)));
                     break;
                 }
             }

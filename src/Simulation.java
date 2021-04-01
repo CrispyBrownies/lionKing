@@ -18,7 +18,7 @@ import java.util.Iterator;
 class Simulation {
 
     private final int PLANTCOUNT = 100;
-    private final int ZEBRACOUNT = 10;
+    private final int ZEBRACOUNT = 1;
     private final int LIONCOUNT = 0;
 
     private final int MAPSIZE = 100;
@@ -31,8 +31,8 @@ class Simulation {
     private final int MAXWANDERDIRTIME = 1000;
     private final float MAXBABYENERGY = 500;
     private static boolean RunSim = true;
-    private final int MAXWFOODTIMER = 10;
-    private int spawnFoodTimer = 10;
+    private final int MAXWFOODTIMER = 10000;
+    private int spawnFoodTimer = 100000;
     private int plantID = 0;
 
     private ArrayList<Plant> PlantList = new ArrayList<Plant>(PLANTCOUNT);

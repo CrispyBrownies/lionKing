@@ -186,7 +186,7 @@ class Zebra extends Animal {
         DetectPlant(plantList);
         StateManager();
 
-        System.out.println("State: "+this.state);
+//        System.out.println("State: "+this.state);
         switch (this.state) {
             case 0: //wandering phase
                 Wander(mapSize);
