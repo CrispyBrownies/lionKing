@@ -40,10 +40,33 @@ class Animal {
 
     //Calculates if next move will be outside the map
     public boolean CheckCollision(int mapSize) {
-        float nextX = this.x + this.direction.get(0) * 1 * this.speed;
-        float nextY = this.y + this.direction.get(1) * 1 * this.speed;
+        float nextX = this.x + this.direction.get(0) * 100 * this.speed;
+        float nextY = this.y + this.direction.get(1) * 100 * this.speed;
 
         return nextX > 2 * mapSize || nextX < 0 || nextY > 2 * mapSize || nextY < 0;
+    }
+
+    //Returns closest wall with 0,1,2,3 in clockwise direction
+    public int ClosestWall(int mapSize) {
+        float distUp = Equations.EuclDist(this.x, this.y, this.x,2*mapSize);
+        float distDown = Equations.EuclDist(this.x, this.y, this.x, 0);
+        float distRight = Equations.EuclDist(this.x, this.y, 2*mapSize, this.y);
+        float distLeft = Equations.EuclDist(this.x, this.y, 0, this.y);
+
+        float maxDist = Math.min(Math.min(Math.min(distUp,distDown),distLeft),distRight);
+
+        if (maxDist == distUp) {
+            return 0;
+        }
+        else if (maxDist == distRight) {
+            return 1;
+        }
+        else if (maxDist == distDown) {
+            return 2;
+        }
+        else {
+            return 3;
+        }
     }
 
     //Sets the target direction towards object
@@ -94,6 +117,7 @@ class Animal {
         //Advance(mapSize);
     }
 
+    //Method to calculate turning using target direction
     public void Turn(int dir) {
 
         Vector<Float> turnDir = this.direction;
@@ -139,6 +163,40 @@ class Animal {
         this.direction = turnDir;
     }
 
+    //Method for turning giving angle
+    public void Turn(float turnAngle) {
+        Vector<Float> turnDir = this.direction;
+        if (Equations.Truncate(turnAngle,3) != 0.000f) {
+            float currentAngle = Equations.AngleBTVector(toVector(1,0),this.direction);
+            float scale = 1;
+
+            System.out.println("Direction: "+this.direction);
+            System.out.println("Position: "+this.x+" "+this.y);
+            System.out.println("Target Dir: "+this.targetDir);
+            System.out.println("Angle Btwn: "+Math.toDegrees(turnAngle));
+            System.out.println("Current Angle: "+Math.signum(currentAngle)*Math.toDegrees(currentAngle));
+
+            float signedAngle = Math.signum(this.direction.get(1))*currentAngle + this.speed*scale*turnAngle;
+
+//            if (signedAngle > Math.PI) {
+//                signedAngle = -(2*(float)Math.PI-signedAngle);
+//            } else if (signedAngle < -Math.PI) {
+//                signedAngle = (2*(float)Math.PI+signedAngle);
+//            }
+
+            System.out.println("Signed Angle: "+Math.toDegrees(signedAngle));
+            if (!Float.isNaN(turnAngle)) {
+                turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
+                this.targetDir = turnDir;
+            }
+//            else {
+//                turnDir = this.targetDir;
+//            }
+        }
+//        System.out.println("Turn Dir: "+turnDir);
+        this.direction = turnDir;
+    }
+
     //Moves the animal forward in whichever direction they want to travel in
     public void Advance(int mapSize) {
 //        System.out.println("Direction: "+this.direction);
@@ -152,8 +210,30 @@ class Animal {
 //            System.out.println("OUT");
 //            System.out.println("Direction: "+this.direction);
 //            System.out.println("Target Dir: "+this.targetDir);
-            this.PickNewDir();
-            Turn(0);
+            switch (ClosestWall(mapSize)) {
+                case 0: {
+                    float angleBtwn = (float)(Math.random()*Math.PI/2);
+                    Turn(angleBtwn*-1*Math.signum(this.direction.get(0)));
+                    break;
+                }
+                case 1: {
+                    float angleBtwn = (float)(Math.random()*Math.PI/2);
+                    Turn(angleBtwn*1*Math.signum(this.direction.get(1)));
+                    break;
+                }
+                case 2: {
+                    float angleBtwn = (float)(Math.random()*Math.PI/2);
+                    Turn(angleBtwn*1*Math.signum(this.direction.get(0)));
+                    break;
+                }
+                case 3: {
+                    float angleBtwn = (float)(Math.random()*Math.PI/2);
+                    Turn(angleBtwn*-1*Math.signum(this.direction.get(1)));
+                    break;
+                }
+            }
+//            this.PickNewDir();
+//            Turn(0);
         }
         this.x += this.direction.get(0) * this.speed;
         this.y += this.direction.get(1) * this.speed;
