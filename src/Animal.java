@@ -16,6 +16,7 @@ class Animal {
     private int movementState;
     private float turnAngle;
     private int turnSteps;
+    private boolean alive = true;
 
     public Vector<Float> targetDir = new Vector<Float>(2);
     public Vector<Float> targetPos = new Vector<Float>(2);
@@ -32,6 +33,9 @@ class Animal {
     //position coordinates
     private float x;
     private float y;
+
+    private Vector<Float> color;
+    private Vector<Float> targetedColor;
 
     //private int environmentSize;
 
@@ -71,22 +75,24 @@ class Animal {
 
     //Sets the target direction towards object
     public void SetTargetDir(Object object) {
+
         float mag;
+
         if (object instanceof Zebra) {
             mag = Equations.EuclDist(this.x,this.y,((Zebra) object).getX(),((Zebra) object).getY());
-            this.targetDir = toVector((((Zebra) object).getX()-this.x)/mag,(((Zebra) object).getY()-this.y)/mag);
+            this.targetDir = Equations.toVector((((Zebra) object).getX()-this.x)/mag,(((Zebra) object).getY()-this.y)/mag);
         }
         else if (object instanceof Lion) {
             mag = Equations.EuclDist(this.x,this.y,((Lion) object).getX(),((Lion) object).getY());
-            this.targetDir = toVector((this.x-((Lion) object).getX())/mag,(this.y-((Lion) object).getY())/mag);
+            this.targetDir = Equations.toVector((this.x-((Lion) object).getX())/mag,(this.y-((Lion) object).getY())/mag);
         }
         else if (object instanceof Plant) {
             mag = Equations.EuclDist(this.x,this.y,((Plant) object).getX(),((Plant) object).getY());
-            this.targetDir = toVector((((Plant) object).getX()-this.x)/mag,(((Plant) object).getY()-this.y)/mag);
+            this.targetDir = Equations.toVector((((Plant) object).getX()-this.x)/mag,(((Plant) object).getY()-this.y)/mag);
         }
         else {
             mag = Equations.EuclDist(this.x,this.y,((Vector<Float>) object).get(0),((Vector<Float>) object).get(1));
-            this.targetDir = toVector((((Vector<Float>) object).get(0)-this.x)/mag,(((Vector<Float>) object).get(1)-this.y)/mag);
+            this.targetDir = Equations.toVector((((Vector<Float>) object).get(0)-this.x)/mag,(((Vector<Float>) object).get(1)-this.y)/mag);
         }
     }
 
@@ -113,7 +119,7 @@ class Animal {
         }
         float nextX = this.getX()+this.direction.get(0)*this.getSpeed()*100f;
         float nextY = this.getY()+this.direction.get(1)*this.getSpeed()*100f;
-        this.setTargetPos(toVector(nextX,nextY));
+        this.setTargetPos(Equations.toVector(nextX,nextY));
         //Advance(mapSize);
     }
 
@@ -123,7 +129,7 @@ class Animal {
         Vector<Float> turnDir = this.direction;
         if ((Equations.Truncate(this.direction.get(0),2) != Equations.Truncate(this.targetDir.get(0),2)) && (Equations.Truncate(this.direction.get(1),3) != Equations.Truncate(this.targetDir.get(1),3))) {
             float angleBtwn = Equations.AngleBTVector(this.direction, this.targetDir);
-            float currentAngle = Equations.AngleBTVector(toVector(1,0),this.direction);
+            float currentAngle = Equations.AngleBTVector(Equations.toVector(1,0),this.direction);
             float scale = 1;
 
 //            System.out.println("Direction: "+this.direction);
@@ -144,11 +150,11 @@ class Animal {
             if (!Float.isNaN(angleBtwn)) {
                 switch (dir) {
                     case 0: {
-                        turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
+                        turnDir = Equations.toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
                         break;
                     }
                     case 1: {
-                        turnDir = toVector((float) (-1 * Math.cos(angleBtwn * this.speed)), (float) (-1 * Math.sin(angleBtwn * this.speed)));
+                        turnDir = Equations.toVector((float) (-1 * Math.cos(angleBtwn * this.speed)), (float) (-1 * Math.sin(angleBtwn * this.speed)));
                         break;
                     }
                     default:
@@ -159,7 +165,6 @@ class Animal {
                 turnDir = this.targetDir;
             }
         }
-//        System.out.println("Turn Dir: "+turnDir);
         this.direction = turnDir;
     }
 
@@ -167,36 +172,20 @@ class Animal {
     public void TurnWall(float turnAngle) {
         Vector<Float> turnDir = this.direction;
         if (Equations.Truncate(turnAngle,3) != 0.000f) {
-            float currentAngle = Equations.AngleBTVector(toVector(1,0),this.direction);
+            float currentAngle = Equations.AngleBTVector(Equations.toVector(1,0),this.direction);
             float scale = 1;
 
-            System.out.println("Direction: "+this.direction);
-            System.out.println("Position: "+this.x+" "+this.y);
-            System.out.println("Target Dir: "+this.targetDir);
-            System.out.println("Angle Btwn: "+Math.toDegrees(turnAngle));
-            System.out.println("Current Angle: "+Math.signum(currentAngle)*Math.toDegrees(currentAngle));
+//            System.out.println("Direction: "+this.direction);
+//            System.out.println("Position: "+this.x+" "+this.y);
+//            System.out.println("Target Dir: "+this.targetDir);
+//            System.out.println("Angle Btwn: "+Math.toDegrees(turnAngle));
+//            System.out.println("Current Angle: "+Math.signum(currentAngle)*Math.toDegrees(currentAngle));
 
             float signedAngle = Math.signum(this.direction.get(1))*currentAngle + this.speed*scale*turnAngle;
 
-//            if (signedAngle > Math.PI) {
-//                signedAngle = -(2*(float)Math.PI-signedAngle);
-//            } else if (signedAngle < -Math.PI) {
-//                signedAngle = (2*(float)Math.PI+signedAngle);
-//            }
-            turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
+            turnDir = Equations.toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
             this.targetDir = turnDir;
-
-//            System.out.println("Signed Angle: "+Math.toDegrees(signedAngle));
-//            if (!Float.isNaN(turnAngle)) {
-//                turnDir = toVector((float) Math.cos(signedAngle), (float) Math.sin(signedAngle));
-//                this.targetDir = turnDir;
-//            }
-//            else {
-//                turnDir = this.targetDir;
-//            }
         }
-//        System.out.println("Turn Dir: "+turnDir);
-        //this.direction = turnDir;
     }
 
     //Moves the animal forward in whichever direction they want to travel in
@@ -238,11 +227,22 @@ class Animal {
         this.y += this.direction.get(1) * this.speed;
     }
 
-    public Vector<Float> toVector(float x, float y) {
-        Vector<Float> newDirVect = new Vector<Float>();
-        newDirVect.add(x);
-        newDirVect.add(y);
-        return newDirVect;
+    public void CheckAlive() {
+        if (this.getEnergy() < 0) {
+            this.alive = false;
+        }
+    }
+
+    public boolean getAlive() {
+        return alive;
+    }
+
+    public Vector<Float> getColor() {
+        return color;
+    }
+
+    public Vector<Float> getTargetedColor() {
+        return targetedColor;
     }
 
     public int getMovementState() {
@@ -316,6 +316,15 @@ class Animal {
 //    public int getEnvironmentSize() {
 //        return environmentSize;
 //    }
+
+
+    public void setColor(Vector<Float> color) {
+        this.color = color;
+    }
+
+    public void setTargetedColor(Vector<Float> targetedColor) {
+        this.targetedColor = targetedColor;
+    }
 
     public void setMovementState(int movementState) {
         this.movementState = movementState;

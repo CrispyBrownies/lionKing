@@ -127,30 +127,44 @@ public class Graphics {
 
     public static void DrawObject(Object object) {
         float x,y;
+        Vector<Float> color;
+        Vector<Float> targetedColor;
+
         if (object instanceof Zebra) {
+
+            color = ((Zebra) object).getColor();
+            targetedColor = ((Zebra) object).getTargetedColor();
+
             DrawDir((Zebra)object);
             DrawRange((Zebra)object);
             if (((Zebra) object).isTargeted()) {
-                GL11.glColor3f(33f / 255f, 248f / 255f, 255f / 255f);
+                GL11.glColor3f(targetedColor.get(0),targetedColor.get(1),targetedColor.get(2));
             } else {
-                GL11.glColor3f(170f / 255f, 170f / 255f, 170f / 255f);
+                GL11.glColor3f(color.get(0),color.get(1),color.get(2));
             }
 
             x = ((Zebra)object).getX() / 100 - 1f;
             y = ((Zebra)object).getY() / 100 - 1f;
         }
         else if (object instanceof Lion) {
+
+            color = ((Lion) object).getColor();
+
             DrawDir((Lion)object);
-            GL11.glColor3f(243f / 255f, 105f / 255f, 25f / 255f);
+            GL11.glColor3f(color.get(0),color.get(1),color.get(2));
 
             x = ((Lion)object).getX() / 100 - 1f;
             y = ((Lion)object).getY() / 100 - 1f;
         }
         else {
+
+            color = ((Plant) object).getColor();
+            targetedColor = ((Plant) object).getTargetedColor();
+
             if (((Plant)object).isTargeted()) {
-                GL11.glColor3f(17f / 255f, 54f / 255f, 240f / 255f);
+                GL11.glColor3f(targetedColor.get(0),targetedColor.get(1),targetedColor.get(2));
             } else {
-                GL11.glColor3f(10f / 255f, 153f / 255f, 35f / 255f);
+                GL11.glColor3f(color.get(0),color.get(1),color.get(2));
             }
 
             x = ((Plant)object).getX() / 100 - 1f;

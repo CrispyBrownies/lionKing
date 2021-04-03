@@ -25,6 +25,7 @@ class Lion extends Animal {
         setSpeed(0.3f);
         setDetectRange(50);
         setWanderDirTimer(WANDERDIRTIMER);
+        setColor(Equations.toVector(243f / 255f, 105f / 255f, 25f / 255f));
         //this.setDirection(this.PickNewDir());
         this.PickNewDir();
         this.targeted = false;
@@ -71,6 +72,7 @@ class Lion extends Animal {
         else {
             Wander(mapSize);
         }
+        CheckAlive();
     }
 
 

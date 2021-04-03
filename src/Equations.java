@@ -37,4 +37,20 @@ class Equations {
 //        System.out.println("angle: "+angle);
         return angle;
     }
+
+    public static Vector<Float> toVector(float x, float y) {
+        Vector<Float> newDirVect = new Vector<Float>();
+        newDirVect.add(x);
+        newDirVect.add(y);
+        return newDirVect;
+    }
+
+    public static Vector<Float> toVector(float x, float y, float z) {
+        Vector<Float> newDirVect = new Vector<Float>();
+        newDirVect.add(x);
+        newDirVect.add(y);
+        newDirVect.add(z);
+        return newDirVect;
+    }
+
 }
