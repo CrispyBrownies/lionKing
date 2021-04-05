@@ -9,7 +9,7 @@ class Equations {
     }
 
     public static float EnergyCost(float speed) {
-        float energyCost = 0.001f*speed; //Equation to calculate energy cost based on speed
+        float energyCost = 0.075f; //Equation to calculate energy cost based on speed
         return energyCost;
     }
 
@@ -51,6 +51,14 @@ class Equations {
         newDirVect.add(y);
         newDirVect.add(z);
         return newDirVect;
+    }
+
+    public static int GetRandomSign() {
+        Random rand = new Random();
+        if(rand.nextBoolean())
+            return -1;
+        else
+            return 1;
     }
 
 }

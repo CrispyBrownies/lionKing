@@ -1,1 +1,0 @@
-Generation,StartingEnergy,Speed,DetectRange,BreedEnergy,BabyEnergy,AttentionSpan,Age
