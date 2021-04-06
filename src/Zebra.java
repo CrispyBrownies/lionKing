@@ -16,10 +16,11 @@ class Zebra extends Animal {
     private boolean targeted;
     private float desirability = 100;
     private float desirabilityThreshold = 10;
-    private final int maxBadMate = 10;
+    private final int maxBadMate = 100;
     private int badMateCounter = maxBadMate;
     private int generation = 1;
     private float startEnergy;
+    private int lifespan = 1;
 
     private Plant targetPlant;
     private Zebra targetMate;
@@ -31,7 +32,7 @@ class Zebra extends Animal {
         this.state = 10;
     }
 
-    public Zebra(float x, float y, float speed, float energy, float detectRange, float breedEnergy, float babyEnergy, int maxWanderDirTimer, int attentionSpan, float desirability, float desirabilityThreshold) {
+    public Zebra(float x, float y, float speed, float energy, float detectRange, float breedEnergy, float babyEnergy, int maxWanderDirTimer, int attentionSpan, float desirability, float desirabilityThreshold, int lifespan) {
         setName("Zebra");
         setEnergy(energy);
         setSpeed(speed);
@@ -42,13 +43,14 @@ class Zebra extends Animal {
         setWanderDirTimer(maxWanderDirTimer);
         setMaxWanderDirTimer(maxWanderDirTimer);
         setAttentionSpan(attentionSpan);
-        setAge(0);
+        setAge(1);
         if (babyEnergy > breedEnergy) {babyEnergy = breedEnergy;};
         setBabyEnergy(babyEnergy);
         setColor(Equations.toVector(170f / 255f, 170f / 255f, 170f / 255f));
         setTargetedColor(Equations.toVector(170f / 255f, 170f / 255f, 170f / 255f));
         setDesirability(desirability);
         setDesirabilityThreshold(desirabilityThreshold);
+        setLifespan(lifespan);
         this.PickNewDir();
         this.setDirection(Equations.toVector(0f,1f));
         this.setTargetPos(Equations.toVector(0f,0f));
@@ -76,17 +78,33 @@ class Zebra extends Animal {
 
     //Picks a random plant in range
     private void PickNewPlant(ArrayList<Plant> plantList) {
-        ArrayList<Plant> plantInRange = new ArrayList<Plant>();
-        for (Plant plant : plantList) {
-            float distBetween = Equations.EuclDist(plant.getX(), plant.getY(), getX(), getY());
+
+        HashMap<Float, Plant> plantMap = new HashMap<Float, Plant>();
+        //Looking for food in range
+        for (Plant plant:plantList) { //for each zebra in zebraList
+            float distBetween = Equations.EuclDist(plant.getX(),plant.getY(),getX(),getY());
             if (distBetween < getDetectRange()) {
-                plantInRange.add(plant);
+                plantMap.put(distBetween, plant);
             }
         }
-        int pickNum = (int) (Math.random() * plantInRange.size());
-        if (plantInRange.size() > 0) {
-            this.targetPlant = plantInRange.get(pickNum);
+        if (plantMap.size()>0) {
+            Set<Float> distances = plantMap.keySet();
+            float minDist = Collections.min(distances);
+            this.targetPlant = plantMap.get(minDist);
         }
+
+
+//        ArrayList<Plant> plantInRange = new ArrayList<Plant>();
+//        for (Plant plant : plantList) {
+//            float distBetween = Equations.EuclDist(plant.getX(), plant.getY(), getX(), getY());
+//            if (distBetween < getDetectRange()) {
+//                plantInRange.add(plant);
+//            }
+//        }
+//        int pickNum = (int) (Math.random() * plantInRange.size());
+//        if (plantInRange.size() > 0) {
+//            this.targetPlant = plantInRange.get(pickNum);
+//        }
     }
 
     private void StateManager() {
@@ -95,7 +113,7 @@ class Zebra extends Animal {
             //this.setTargetPos(Equations.toVector(targetLion.getX(),targetLion.getY()));
         }
         else {
-            if (this.targetMate != null && this.getEnergy() > this.getBreedEnergy()) { //
+            if (this.targetMate != null && this.getEnergy() > this.getBabyEnergy()) { //
                 this.state = 2;
                 //this.setTargetPos(Equations.toVector(targetMate.getX(), targetMate.getY()));
             }
@@ -155,9 +173,12 @@ class Zebra extends Animal {
                 RemoveMate();
                 PickNewMate(zebraList);
             }
-            else if (this.getEnergy() < this.getBreedEnergy() || this.targetMate.getEnergy() < this.targetMate.getBreedEnergy()) {
+            else if (this.getEnergy() < this.getBabyEnergy() || this.targetMate.getEnergy() < this.targetMate.getBabyEnergy()) {
                 RemoveMate();
             }
+        }
+        else if (Equations.EuclDist(targetMate.getX(), targetMate.getY(), getX(), getY()) > getDetectRange()) {
+            this.targetMate = null;
         }
 //        else {
 //            System.out.println("rejected!");
@@ -204,7 +225,7 @@ class Zebra extends Animal {
         for (Zebra zebra:zebraList) {
             if (zebra != this && !this.badMates.contains(zebra)) {
                 float distBetween = Equations.EuclDist(zebra.getX(), zebra.getY(), getX(), getY());
-                if ((distBetween < getDetectRange()) && (zebra.getEnergy()>zebra.getBreedEnergy())) {
+                if ((distBetween < getDetectRange()) && (zebra.getEnergy()>zebra.getBabyEnergy())) {
                     mateMap.put(zebra.getDesirability(), zebra);
                 }
             }
@@ -258,7 +279,11 @@ class Zebra extends Animal {
         //ArrayList<Zebra> addZebras = new ArrayList<Zebra>();
 
         DetectEnemy(lionList);
-        DetectMate(zebraList);
+
+        if (this.getEnergy() > this.getBreedEnergy()) {
+            DetectMate(zebraList);
+        }
+        //System.out.println("can breed: "+(this.getEnergy() > this.getBabyEnergy()));
 
         //System.out.println("breedtimer: "+this.breedTimer);
 //        if (this.breedTimer == 0) {
@@ -270,8 +295,8 @@ class Zebra extends Animal {
         StateManager();
 
         System.out.println("State: "+this.state);
-        System.out.println("Energy: "+this.getEnergy());
-        System.out.println("can breed: "+(this.getBreedEnergy()<this.getEnergy()));
+//        System.out.println("Energy: "+this.getEnergy());
+//        System.out.println("can breed: "+(this.getBreedEnergy()<this.getEnergy()));
         switch (this.state) {
             case 0: //wandering phase
                 Wander(mapSize);
@@ -296,7 +321,25 @@ class Zebra extends Animal {
         Advance(mapSize);
         MateAvoider();
         CheckAlive();
+        Aging();
         //return addZebras;
+    }
+
+    private void Aging() {
+        //System.out.println(this.getLifespan());
+        double deathProb = (double)this.getAge()/(double)this.getLifespan();
+        double dieChance = Math.random();
+        double base = 1.00001;
+
+        deathProb = (Math.pow(base,deathProb)-1);
+
+
+        if (dieChance < deathProb) {
+            this.setEnergy(0);
+            this.setCod("Old Age");
+            System.out.println("deathprob: "+deathProb);
+            System.out.println("diechance: "+dieChance);
+        }
     }
 
     //Handles the eating of plants
@@ -321,6 +364,8 @@ class Zebra extends Animal {
     public void setGeneration(int generation) {
         this.generation = generation;
     }
+
+
 
     public Zebra getTargetMate() {
         return targetMate;
@@ -352,6 +397,14 @@ class Zebra extends Animal {
 
     public Plant getTargetPlant() {
         return targetPlant;
+    }
+
+    public int getLifespan() {
+        return lifespan;
+    }
+
+    public void setLifespan(int lifespan) {
+        this.lifespan = lifespan;
     }
 
     public void setDesirability(float desirability) {

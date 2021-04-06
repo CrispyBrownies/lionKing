@@ -25,13 +25,14 @@ class Simulation {
     private final float MAXSPEED = 0.5f;
     private final float MAXENERGY = 200f;
     private final int MAXDETECT = 100;
-    private final int MAXBREEDENERGY = 150;
+    private final int MAXBREEDENERGY = 100;
     private final int MAXATTENTION = 3000;
     private final int MINATTENTION = 100;
     private final int MAXWANDERDIRTIME = 1000;
     private final float MAXBABYENERGY = 50;
     private final float DESIRABILITY = 100;
     private final float DESIRABILITYTHRESHOLD = 10;
+    private final int MAXLIFESPAN = 15000;
     private static boolean RunSim = true;
     private final int MAXWFOODTIMER = 25;
     private int spawnFoodTimer = MAXWFOODTIMER;
@@ -131,11 +132,13 @@ class Simulation {
 
     private void CreateSim() {
         for (int i = ZEBRACOUNT; i > 0; i--) {
+            int life = (int) (Math.random() * MAXLIFESPAN);
+            System.out.println("life: "+life);
             Zebra newZebra = new Zebra((int) (Math.random() * 2 * MAPSIZE), (int) (Math.random() * 2 * MAPSIZE),
                     (float) (Math.random() * MAXSPEED), (float) Math.random() * MAXENERGY,
                     (float) Math.random() * MAXDETECT, (int) Math.round(Math.random() * MAXBREEDENERGY),
                     (float) Math.random() * MAXBABYENERGY, (int) Math.round(Math.random() * MAXWANDERDIRTIME),
-                    (int) (Math.random() * MAXATTENTION + MINATTENTION),(float) Math.random() * DESIRABILITY, (float) Math.random() * DESIRABILITYTHRESHOLD);
+                    (int) (Math.random() * MAXATTENTION + MINATTENTION),(float) Math.random() * DESIRABILITY, (float) Math.random() * DESIRABILITYTHRESHOLD, life);
             newZebra.CheckCollision(getMAPSIZE());
             ZebraList.add(newZebra);
         }
@@ -164,13 +167,13 @@ class Simulation {
             breedState = ((zebra.getState() == 2) && (zebra.getTargetMate().getState() == 2));
         }
 
-        System.out.println("matchmate: "+matchMate);
-        System.out.println("inrange: "+inRange);
-        System.out.println("breedstate: "+breedState);
+//        System.out.println("matchmate: "+matchMate);
+//        System.out.println("inrange: "+inRange);
+//        System.out.println("breedstate: "+breedState);
 
         //if can breed,
         if (matchMate && inRange && breedState) {
-            System.out.println("New Zebra!");
+            //System.out.println("New Zebra!");
 
             float newX = zebra.getX();
             float newY = zebra.getY();
@@ -186,8 +189,10 @@ class Simulation {
             float newDesirability = ((zebra.getDesirability()+zebra.getTargetMate().getDesirability())/2) + (float)Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getDesirability(),zebra.getTargetMate().getDesirability());
             float newDesirabilityThreshold = ((zebra.getDesirabilityThreshold()+zebra.getTargetMate().getDesirabilityThreshold())/2) + (float)Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getDesirabilityThreshold(),zebra.getTargetMate().getDesirabilityThreshold());
             int newGen = (Math.max(zebra.getGeneration(),zebra.getTargetMate().getGeneration()))+1;
+            int newLifespan = ((zebra.getLifespan()+zebra.getTargetMate().getLifespan())/2) + (int)Math.round(Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getLifespan(),zebra.getTargetMate().getLifespan()));
 
-            baby = new Zebra(newX,newY,newSpeed,newEnergy,newRange,newBreedEnergy,newBabyEnergy,newWanderDirTimer,newAttentionSpan,newDesirability,newDesirabilityThreshold);
+
+            baby = new Zebra(newX,newY,newSpeed,newEnergy,newRange,newBreedEnergy,newBabyEnergy,newWanderDirTimer,newAttentionSpan,newDesirability,newDesirabilityThreshold,newLifespan);
             baby.setGeneration(newGen);
 
             //add bad mates so they find new mates

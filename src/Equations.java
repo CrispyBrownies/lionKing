@@ -9,7 +9,7 @@ class Equations {
     }
 
     public static float EnergyCost(float speed) {
-        float energyCost = 0.075f; //Equation to calculate energy cost based on speed
+        float energyCost = 0.1f; //Equation to calculate energy cost based on speed
         return energyCost;
     }
 

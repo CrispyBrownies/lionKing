@@ -62,9 +62,10 @@ public class Data {
                     float desire = ((Zebra)object).getDesirability();
                     float desireThreshold = ((Zebra)object).getDesirabilityThreshold();
                     int age = ((Zebra)object).getAge();
+                    int lifespan = ((Zebra)object).getLifespan();
+                    String cod = ((Zebra)object).getCod();
 
-                    //writer.append(gen+","+energy+","+speed+","+range+","+breedE+","+babyE+","+attention+","+desire+","+desireThreshold+","+age+"\n");
-                    writer.append(String.valueOf(gen)).append(",").append(String.valueOf(energy)).append(",").append(String.valueOf(speed)).append(",").append(String.valueOf(range)).append(",").append(String.valueOf(breedE)).append(",").append(String.valueOf(babyE)).append(",").append(String.valueOf(attention)).append(",").append(String.valueOf(desire)).append(",").append(String.valueOf(desireThreshold)).append(",").append(String.valueOf(age)).append("\n");
+                    writer.append(gen+","+energy+","+speed+","+range+","+breedE+","+babyE+","+attention+","+desire+","+desireThreshold+","+lifespan+","+age+","+cod+"\n");
 
                     writer.close();
                 }
@@ -105,7 +106,7 @@ public class Data {
         //System.out.println("hi");
         try {
             FileWriter zWriter = new FileWriter(zebraFilename);
-            zWriter.append("Generation,StartingEnergy,Speed,DetectRange,BreedEnergy,BabyEnergy,AttentionSpan,Desirability,DesirabilityThreshold,Age\n");
+            zWriter.append("Generation,StartingEnergy,Speed,DetectRange,BreedEnergy,BabyEnergy,AttentionSpan,Desirability,DesirabilityThreshold,Lifespan,Age,COD\n");
             System.out.println("wrote");
             zWriter.close();
         }

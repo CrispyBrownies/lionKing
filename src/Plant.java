@@ -9,7 +9,7 @@ class Plant {
     //Plant properties
     private float x;
     private float y;
-    private final int FOODVAL = 10;
+    private final int FOODVAL = 25;
     private int id = 0;
     private boolean targeted;
     private Vector<Float> color = Equations.toVector(10f / 255f, 153f / 255f, 35f / 255f);

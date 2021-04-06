@@ -17,6 +17,7 @@ class Animal {
     private float turnAngle;
     private int turnSteps;
     private boolean alive = true;
+    private String cod = " ";
 
     public Vector<Float> targetDir = new Vector<Float>(2);
     public Vector<Float> targetPos = new Vector<Float>(2);
@@ -229,8 +230,19 @@ class Animal {
 
     public void CheckAlive() {
         if (this.getEnergy() < 0) {
+            if (this.getCod().equals(" ")) {
+                this.setCod("Starvation");
+            }
             this.alive = false;
         }
+    }
+
+    public String getCod() {
+        return cod;
+    }
+
+    public void setCod(String cod) {
+        this.cod = cod;
     }
 
     public boolean getAlive() {
