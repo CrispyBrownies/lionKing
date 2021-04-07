@@ -16,11 +16,12 @@ class Zebra extends Animal {
     private boolean targeted;
     private float desirability = 100;
     private float desirabilityThreshold = 10;
-    private final int maxBadMate = 100;
+    private final int maxBadMate = 1000;
     private int badMateCounter = maxBadMate;
     private int generation = 1;
     private float startEnergy;
     private int lifespan = 1;
+    private int birthTime;
 
     private Plant targetPlant;
     private Zebra targetMate;
@@ -32,7 +33,7 @@ class Zebra extends Animal {
         this.state = 10;
     }
 
-    public Zebra(float x, float y, float speed, float energy, float detectRange, float breedEnergy, float babyEnergy, int maxWanderDirTimer, int attentionSpan, float desirability, float desirabilityThreshold, int lifespan) {
+    public Zebra(float x, float y, float speed, float energy, float detectRange, float breedEnergy, float babyEnergy, int maxWanderDirTimer, int attentionSpan, float desirability, float desirabilityThreshold, int lifespan, int birthTime) {
         setName("Zebra");
         setEnergy(energy);
         setSpeed(speed);
@@ -51,9 +52,10 @@ class Zebra extends Animal {
         setDesirability(desirability);
         setDesirabilityThreshold(desirabilityThreshold);
         setLifespan(lifespan);
+        setBirthTime(birthTime);
         this.PickNewDir();
         this.setDirection(Equations.toVector(0f,1f));
-        this.setTargetPos(Equations.toVector(0f,0f));
+        //this.setTargetPos(Equations.toVector(0f,0f));
         this.setMovementState(0);
         this.startEnergy = energy;
     }
@@ -114,6 +116,7 @@ class Zebra extends Animal {
         }
         else {
             if (this.targetMate != null && this.getEnergy() > this.getBabyEnergy()) { //
+                System.out.println("target mate: "+this.targetMate);
                 this.state = 2;
                 //this.setTargetPos(Equations.toVector(targetMate.getX(), targetMate.getY()));
             }
@@ -283,6 +286,7 @@ class Zebra extends Animal {
         if (this.getEnergy() > this.getBreedEnergy()) {
             DetectMate(zebraList);
         }
+        RemoveDeadMates();
         //System.out.println("can breed: "+(this.getEnergy() > this.getBabyEnergy()));
 
         //System.out.println("breedtimer: "+this.breedTimer);
@@ -294,7 +298,7 @@ class Zebra extends Animal {
         DetectPlant(plantList);
         StateManager();
 
-        System.out.println("State: "+this.state);
+//        System.out.println("State: "+this.state);
 //        System.out.println("Energy: "+this.getEnergy());
 //        System.out.println("can breed: "+(this.getBreedEnergy()<this.getEnergy()));
         switch (this.state) {
@@ -320,8 +324,8 @@ class Zebra extends Animal {
         Turn(0);
         Advance(mapSize);
         MateAvoider();
-        CheckAlive();
         Aging();
+        CheckAlive();
         //return addZebras;
     }
 
@@ -333,12 +337,11 @@ class Zebra extends Animal {
 
         deathProb = (Math.pow(base,deathProb)-1);
 
-
         if (dieChance < deathProb) {
             this.setEnergy(0);
             this.setCod("Old Age");
-            System.out.println("deathprob: "+deathProb);
-            System.out.println("diechance: "+dieChance);
+//            System.out.println("deathprob: "+deathProb);
+//            System.out.println("diechance: "+dieChance);
         }
     }
 
@@ -350,6 +353,14 @@ class Zebra extends Animal {
             plantList.remove(targetPlant); //removes this plant
             this.targetPlant = null; //clear targetPlant variable
             //this.PickNewDir();
+        }
+    }
+
+    private void RemoveDeadMates() {
+        if (targetMate != null) {
+            if (!targetMate.getAlive()) {
+                targetMate = null;
+            }
         }
     }
 
@@ -365,7 +376,13 @@ class Zebra extends Animal {
         this.generation = generation;
     }
 
+    public void setBirthTime(int birthTime) {
+        this.birthTime = birthTime;
+    }
 
+    public int getBirthTime() {
+        return birthTime;
+    }
 
     public Zebra getTargetMate() {
         return targetMate;

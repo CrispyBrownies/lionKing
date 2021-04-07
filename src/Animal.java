@@ -45,10 +45,21 @@ class Animal {
 
     //Calculates if next move will be outside the map
     public boolean CheckCollision(int mapSize) {
-        float nextX = this.x + this.direction.get(0) * 100 * this.speed;
-        float nextY = this.y + this.direction.get(1) * 100 * this.speed;
+        float nextX = this.x + this.direction.get(0) * 10 * this.speed;
+        float nextY = this.y + this.direction.get(1) * 10 * this.speed;
 
-        return nextX > 2 * mapSize || nextX < 0 || nextY > 2 * mapSize || nextY < 0;
+        if (this instanceof Zebra) {
+            boolean chasing = (((Zebra)this).getState() == 1 || ((Zebra)this).getState() == 2);
+            if (!chasing) {
+                return nextX > 2 * mapSize || nextX < 0 || nextY > 2 * mapSize || nextY < 0;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return nextX > 2 * mapSize || nextX < 0 || nextY > 2 * mapSize || nextY < 0;
+        }
     }
 
     //Returns closest wall with 0,1,2,3 in clockwise direction
@@ -128,7 +139,7 @@ class Animal {
     public void Turn(int dir) {
 
         Vector<Float> turnDir = this.direction;
-        if ((Equations.Truncate(this.direction.get(0),2) != Equations.Truncate(this.targetDir.get(0),2)) && (Equations.Truncate(this.direction.get(1),3) != Equations.Truncate(this.targetDir.get(1),3))) {
+        if ((Equations.Truncate(this.direction.get(0),4) != Equations.Truncate(this.targetDir.get(0),4)) && (Equations.Truncate(this.direction.get(1),3) != Equations.Truncate(this.targetDir.get(1),3))) {
             float angleBtwn = Equations.AngleBTVector(this.direction, this.targetDir);
             float currentAngle = Equations.AngleBTVector(Equations.toVector(1,0),this.direction);
             float scale = 1;
@@ -203,6 +214,7 @@ class Animal {
 //            System.out.println("Direction: "+this.direction);
 //            System.out.println("Target Dir: "+this.targetDir);
             float angleBtwn = (float)(Math.PI/2 + Math.random()*Math.PI/2);
+
             switch (ClosestWall(mapSize)) {
                 case 0: {
                     TurnWall(angleBtwn*-1*Math.signum(this.direction.get(0)));
@@ -232,6 +244,11 @@ class Animal {
         if (this.getEnergy() < 0) {
             if (this.getCod().equals(" ")) {
                 this.setCod("Starvation");
+            }
+            if (this instanceof Zebra) {
+                if (((Zebra)this).getTargetPlant()!=null) {
+                    ((Zebra) this).getTargetPlant().setTargeted(false);
+                }
             }
             this.alive = false;
         }
@@ -409,7 +426,7 @@ class Animal {
 
     public String toString() {
         return getName() + ": Position = (" + getX() + ", " + getY() + ")," +
-                " Speed = " + (getSpeed()) + ", Energy = " + getEnergy() + ", Range = " + getDetectRange();
+                " Speed = " + (getSpeed()) + ", Energy = " + getEnergy() + ", Range = " + getDetectRange() + ", Alive: "+getAlive();
     }
 
 }

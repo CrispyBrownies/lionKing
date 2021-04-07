@@ -45,6 +45,27 @@ public class Data {
         }
     }
 
+//    public static void RecordSim(Simulation sim) {
+//        FileWriter simWriter;
+//
+//        try {
+//            simWriter = new FileWriter(simFilename,true);
+//
+//            int time = sim.getRuntime();
+//            int zebraAlive = sim.getZebraAlive();
+//            int lionAlive = sim.getLionAlive();
+//
+//            //simWriter.append(time+","+zebraAlive+","+lionAlive+"\n");
+//            simWriter.append(time+","+zebraAlive+","+lionAlive+"\n");
+//
+//        }
+//        catch (IOException e) {
+//            System.out.println(simFilename + " cannot be opened!");
+//            e.printStackTrace();
+//        }
+//
+//    }
+
     public static void RecordData(Object object, String objType) {
         FileWriter writer;
         switch(objType) {
@@ -64,8 +85,10 @@ public class Data {
                     int age = ((Zebra)object).getAge();
                     int lifespan = ((Zebra)object).getLifespan();
                     String cod = ((Zebra)object).getCod();
+                    int birthTime = ((Zebra)object).getBirthTime();
 
-                    writer.append(gen+","+energy+","+speed+","+range+","+breedE+","+babyE+","+attention+","+desire+","+desireThreshold+","+lifespan+","+age+","+cod+"\n");
+                    //writer.append(gen+","+energy+","+speed+","+range+","+breedE+","+babyE+","+attention+","+desire+","+desireThreshold+","+lifespan+","+age+","+cod+"\n");
+                    writer.append(gen+","+energy+","+speed+","+range+","+breedE+","+babyE+","+attention+","+desire+","+desireThreshold+","+lifespan+","+age+","+birthTime+","+cod+"\n");
 
                     writer.close();
                 }
@@ -91,6 +114,15 @@ public class Data {
             case "Sim": {
                 try {
                     writer = new FileWriter(simFilename,true);
+
+                    int time = ((Simulation)object).getRuntime();
+                    int zebraAlive = ((Simulation)object).getZebraAlive();
+                    int lionAlive = ((Simulation)object).getLionAlive();
+
+                    //simWriter.append(time+","+zebraAlive+","+lionAlive+"\n");
+                    writer.append(time+","+zebraAlive+","+lionAlive+"\n");
+
+                    writer.close();
                 }
                 catch (IOException e) {
                     System.out.println(simFilename + " cannot be opened!");
@@ -103,11 +135,9 @@ public class Data {
     }
 
     public static void CreateHeaders() {
-        //System.out.println("hi");
         try {
             FileWriter zWriter = new FileWriter(zebraFilename);
-            zWriter.append("Generation,StartingEnergy,Speed,DetectRange,BreedEnergy,BabyEnergy,AttentionSpan,Desirability,DesirabilityThreshold,Lifespan,Age,COD\n");
-            System.out.println("wrote");
+            zWriter.append("Generation,StartingEnergy,Speed,DetectRange,BreedEnergy,BabyEnergy,AttentionSpan,Desirability,DesirabilityThreshold,Lifespan,Age,BirthTime,COD\n");
             zWriter.close();
         }
         catch (IOException e) {
@@ -124,6 +154,7 @@ public class Data {
         }
         try {
             FileWriter sWriter = new FileWriter(simFilename);
+            sWriter.append("Time,ZebraCount,LionCount\n");
             sWriter.close();
         }
         catch (IOException e) {

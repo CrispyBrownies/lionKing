@@ -18,12 +18,12 @@ import java.util.Iterator;
 class Simulation {
 
     private final int PLANTCOUNT = 10;
-    private final int ZEBRACOUNT = 10;
+    private final int ZEBRACOUNT = 20;
     private final int LIONCOUNT = 0;
 
     private final int MAPSIZE = 100;
     private final float MAXSPEED = 0.5f;
-    private final float MAXENERGY = 200f;
+    private final float MAXENERGY = 20000f;
     private final int MAXDETECT = 100;
     private final int MAXBREEDENERGY = 100;
     private final int MAXATTENTION = 3000;
@@ -34,9 +34,16 @@ class Simulation {
     private final float DESIRABILITYTHRESHOLD = 10;
     private final int MAXLIFESPAN = 15000;
     private static boolean RunSim = true;
-    private final int MAXWFOODTIMER = 25;
+    private final int MAXWFOODTIMER = 20;
     private int spawnFoodTimer = MAXWFOODTIMER;
     private int plantID = 0;
+    private float mutPercent = 0.25f;
+
+    //Saving simulation data
+    private int runtime = 0;
+    private int savetime = 1000;
+    private int zebraAlive;
+    private int lionAlive;
 
     private ArrayList<Plant> PlantList = new ArrayList<Plant>(PLANTCOUNT);
     private ArrayList<Zebra> ZebraList = new ArrayList<Zebra>(ZEBRACOUNT);
@@ -101,8 +108,14 @@ class Simulation {
                     Graphics.DrawObject(lion);
                 }
 
+                sim.UpdateSim();
+                if (sim.runtime % sim.savetime == 0) {
+                    Data.RecordData(sim,"Sim");
+                }
+
                 sim.spawnFoodTimer -= 1;
                 Graphics.Update();
+                sim.runtime++;
             }
             RunSim = false;
         }
@@ -118,6 +131,7 @@ class Simulation {
         for (Zebra zebra:ZebraList) {
             if (!zebra.getAlive()) {
                 Data.RecordData(zebra,"Zebra");
+                //System.out.println("dead zebra: "+zebra);
                 removeList.add(zebra);
             }
         }
@@ -130,6 +144,11 @@ class Simulation {
 
     }
 
+    private void UpdateSim() {
+        this.zebraAlive = this.ZebraList.size();
+        this.lionAlive = this.LionList.size();
+    }
+
     private void CreateSim() {
         for (int i = ZEBRACOUNT; i > 0; i--) {
             int life = (int) (Math.random() * MAXLIFESPAN);
@@ -138,7 +157,7 @@ class Simulation {
                     (float) (Math.random() * MAXSPEED), (float) Math.random() * MAXENERGY,
                     (float) Math.random() * MAXDETECT, (int) Math.round(Math.random() * MAXBREEDENERGY),
                     (float) Math.random() * MAXBABYENERGY, (int) Math.round(Math.random() * MAXWANDERDIRTIME),
-                    (int) (Math.random() * MAXATTENTION + MINATTENTION),(float) Math.random() * DESIRABILITY, (float) Math.random() * DESIRABILITYTHRESHOLD, life);
+                    (int) (Math.random() * MAXATTENTION + MINATTENTION),(float) Math.random() * DESIRABILITY, (float) Math.random() * DESIRABILITYTHRESHOLD, life, runtime);
             newZebra.CheckCollision(getMAPSIZE());
             ZebraList.add(newZebra);
         }
@@ -177,22 +196,21 @@ class Simulation {
 
             float newX = zebra.getX();
             float newY = zebra.getY();
-            float newEnergy = (zebra.getBabyEnergy()+zebra.getTargetMate().getBabyEnergy()) + (float)Math.random()*0f;
+            float newEnergy = (zebra.getBabyEnergy()+zebra.getTargetMate().getBabyEnergy());
             zebra.setEnergy(zebra.getEnergy()-zebra.getBabyEnergy());
             zebra.getTargetMate().setEnergy(zebra.getTargetMate().getEnergy()-zebra.getTargetMate().getBabyEnergy());
-            float newSpeed = ((zebra.getSpeed()+zebra.getTargetMate().getSpeed())/2) + (float)Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getSpeed(),zebra.getTargetMate().getSpeed());
-            float newBreedEnergy = ((zebra.getBreedEnergy()+zebra.getTargetMate().getBreedEnergy())/2) + (float)Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getBreedEnergy(),zebra.getTargetMate().getBreedEnergy());
-            float newRange = ((zebra.getDetectRange()+zebra.getTargetMate().getDetectRange())/2) + (float)Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getDetectRange(),zebra.getTargetMate().getDetectRange());
-            float newBabyEnergy = ((zebra.getBabyEnergy()+zebra.getTargetMate().getBabyEnergy())/2) + (float)Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getBabyEnergy(),zebra.getTargetMate().getBabyEnergy());
+            float newSpeed = ((zebra.getSpeed()+zebra.getTargetMate().getSpeed())/2) + (float)Math.random()*Equations.GetRandomSign()*mutPercent*Math.max(zebra.getSpeed(),zebra.getTargetMate().getSpeed());
+            float newBreedEnergy = ((zebra.getBreedEnergy()+zebra.getTargetMate().getBreedEnergy())/2) + (float)Math.random()*Equations.GetRandomSign()*mutPercent*Math.max(zebra.getBreedEnergy(),zebra.getTargetMate().getBreedEnergy());
+            float newRange = ((zebra.getDetectRange()+zebra.getTargetMate().getDetectRange())/2) + (float)Math.random()*Equations.GetRandomSign()*mutPercent*Math.max(zebra.getDetectRange(),zebra.getTargetMate().getDetectRange());
+            float newBabyEnergy = ((zebra.getBabyEnergy()+zebra.getTargetMate().getBabyEnergy())/2) + (float)Math.random()*Equations.GetRandomSign()*mutPercent*Math.max(zebra.getBabyEnergy(),zebra.getTargetMate().getBabyEnergy());
             int newWanderDirTimer = ((zebra.getMaxWanderDirTimer()+zebra.getTargetMate().getMaxWanderDirTimer())/2) + (int)(Math.random()*0);
-            int newAttentionSpan = ((zebra.getMAXATTENTIONSPAN()+zebra.getTargetMate().getMAXATTENTIONSPAN())/2) + (int)Math.round(Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getMAXATTENTIONSPAN(),zebra.getTargetMate().getMAXATTENTIONSPAN()));
-            float newDesirability = ((zebra.getDesirability()+zebra.getTargetMate().getDesirability())/2) + (float)Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getDesirability(),zebra.getTargetMate().getDesirability());
-            float newDesirabilityThreshold = ((zebra.getDesirabilityThreshold()+zebra.getTargetMate().getDesirabilityThreshold())/2) + (float)Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getDesirabilityThreshold(),zebra.getTargetMate().getDesirabilityThreshold());
+            int newAttentionSpan = ((zebra.getMAXATTENTIONSPAN()+zebra.getTargetMate().getMAXATTENTIONSPAN())/2) + (int)Math.round(Math.random()*Equations.GetRandomSign()*mutPercent*Math.max(zebra.getMAXATTENTIONSPAN(),zebra.getTargetMate().getMAXATTENTIONSPAN()));
+            float newDesirability = ((zebra.getDesirability()+zebra.getTargetMate().getDesirability())/2) + (float)Math.random()*Equations.GetRandomSign()*mutPercent*Math.max(zebra.getDesirability(),zebra.getTargetMate().getDesirability());
+            float newDesirabilityThreshold = ((zebra.getDesirabilityThreshold()+zebra.getTargetMate().getDesirabilityThreshold())/2) + (float)Math.random()*Equations.GetRandomSign()*mutPercent*Math.max(zebra.getDesirabilityThreshold(),zebra.getTargetMate().getDesirabilityThreshold());
             int newGen = (Math.max(zebra.getGeneration(),zebra.getTargetMate().getGeneration()))+1;
-            int newLifespan = ((zebra.getLifespan()+zebra.getTargetMate().getLifespan())/2) + (int)Math.round(Math.random()*Equations.GetRandomSign()*0.1f*Math.max(zebra.getLifespan(),zebra.getTargetMate().getLifespan()));
+            int newLifespan = ((zebra.getLifespan()+zebra.getTargetMate().getLifespan())/2) + (int)Math.round(Math.random()*Equations.GetRandomSign()*mutPercent*Math.max(zebra.getLifespan(),zebra.getTargetMate().getLifespan()));
 
-
-            baby = new Zebra(newX,newY,newSpeed,newEnergy,newRange,newBreedEnergy,newBabyEnergy,newWanderDirTimer,newAttentionSpan,newDesirability,newDesirabilityThreshold,newLifespan);
+            baby = new Zebra(newX,newY,newSpeed,newEnergy,newRange,newBreedEnergy,newBabyEnergy,newWanderDirTimer,newAttentionSpan,newDesirability,newDesirabilityThreshold,newLifespan,runtime);
             baby.setGeneration(newGen);
 
             //add bad mates so they find new mates
@@ -213,6 +231,26 @@ class Simulation {
             return baby;
         }
         return baby;
+    }
+
+    public int getLionAlive() {
+        return lionAlive;
+    }
+
+    public void setLionAlive(int lionAlive) {
+        this.lionAlive = lionAlive;
+    }
+
+    public int getZebraAlive() {
+        return zebraAlive;
+    }
+
+    public void setZebraAlive(int zebraAlive) {
+        this.zebraAlive = zebraAlive;
+    }
+
+    public int getRuntime() {
+        return runtime;
     }
 
     public ArrayList<Lion> getLionList() {
