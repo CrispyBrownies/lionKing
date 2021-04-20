@@ -1,2 +1,2 @@
 # lionKing
-Natural Selection simulation of Lions vs Hyenas
+Natural Selection simulation of Lions vs. Zebras
